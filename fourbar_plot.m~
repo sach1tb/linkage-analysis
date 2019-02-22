@@ -39,7 +39,7 @@ plot(real(bpos), imag(bpos), 'ko', 'markersize', 9, 'linewidth', 2);
 %     real(copos-apos), imag(copos-apos), 0, '.', 'color', clrs(3,:), ...
 %     'linewidth', 2);
 
-plot([real(apos), real(copos)]', [imag(apos), imag(copos)]', 'k-.');
+plot(real(apos), real
 
 
 % rocker/output
