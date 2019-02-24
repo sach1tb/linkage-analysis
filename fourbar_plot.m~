@@ -1,6 +1,6 @@
-function [t1,t2, t3, t4]=fourbar_plot(a,b,c,d,cou_ang,cou_pos, t2,t3,t4,t1, clrs)
+function [t1,t2, t3, t4]=fourbar_plot(a,b,c,d,BAP,cou_pos, t2,t3,t4,t1, clrs)
 
-% cou_ang and cou_pos is the angle it makes with the floating
+% BAP and cou_pos is the angle it makes with the floating
 % link and the distance of the coupler link from the joint between
 % the crank and the floater 
 
@@ -13,7 +13,7 @@ bpos=a*exp(1i*t2)+b*exp(1i*t3);
 dpos=d*exp(1i*t1);
 cpos=d*exp(1i*t1)+c*exp(1i*t4);
 
-copos=a*exp(1i*t2)+cou_pos*exp(1i*(t3+cou_ang));
+copos=a*exp(1i*t2)+cou_pos*exp(1i*(t3+BAP));
 
 % draw it
 
@@ -39,7 +39,7 @@ plot(real(bpos), imag(bpos), 'ko', 'markersize', 9, 'linewidth', 2);
 %     real(copos-apos), imag(copos-apos), 0, '.', 'color', clrs(3,:), ...
 %     'linewidth', 2);
 
-plot(real(apos), real
+plot([real(apos), real(copos)]', [imag(apos), imag(copos)]', 'k-.');
 
 
 % rocker/output

@@ -1,9 +1,11 @@
-function [t1,t2, t3, t4]=fourbar_plot(a,b,c,d,cou_ang,cou_pos, t2,t3,t4,t1, clrs)
+function [t1,t2, t3, t4]=fourbar_plot(a,b,c,d,BAP,APlen, t2,t3,t4,t1, clrs)
 
-% cou_ang and cou_pos is the angle it makes with the floating
+% BAP and APlen is the angle it makes with the floating
 % link and the distance of the coupler link from the joint between
 % the crank and the floater 
 
+% fourbar plot automatically adds ground orientation, but plots don't so
+% use this function before you update the theta values for tilted ground
 opos=0*exp(1i*t1);
 t2=t2+t1;
 t3=t3+t1;
@@ -13,7 +15,7 @@ bpos=a*exp(1i*t2)+b*exp(1i*t3);
 dpos=d*exp(1i*t1);
 cpos=d*exp(1i*t1)+c*exp(1i*t4);
 
-copos=a*exp(1i*t2)+cou_pos*exp(1i*(t3+cou_ang));
+copos=a*exp(1i*t2)+APlen*exp(1i*(t3+BAP));
 
 % draw it
 
