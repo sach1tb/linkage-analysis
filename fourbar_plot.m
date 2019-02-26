@@ -4,12 +4,8 @@ function [t1,t2, t3, t4]=fourbar_plot(a,b,c,d,BAP,APlen, t2,t3,t4,t1, clrs)
 % link and the distance of the coupler link from the joint between
 % the crank and the floater 
 
-% fourbar plot automatically adds ground orientation, but plots don't so
-% use this function before you update the theta values for tilted ground
+% fourbar plot automatically adds ground orientation
 opos=0*exp(1i*t1);
-t2=t2+t1;
-t3=t3+t1;
-t4=t4+t1;
 apos=a*exp(1i*t2);
 bpos=a*exp(1i*t2)+b*exp(1i*t3);
 dpos=d*exp(1i*t1);
@@ -56,5 +52,5 @@ quiver(real(dpos), imag(dpos), ...
     real(cpos-dpos), imag(cpos-dpos), 0, 'color', clrs(3,:), ...
     'linewidth', 2);
 grid on;
-axis square
+axis image
 axis off;

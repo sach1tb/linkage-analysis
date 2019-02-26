@@ -17,7 +17,7 @@ addOptional(p,'theta2',0);
 addOptional(p,'simTime',10);
 addOptional(p,'couplerAngle',0);
 addOptional(p,'couplerLength',50);
-addOptional(p,'groundOrientation',0);
+addOptional(p,'groundOrientation',pi/16);
 
 parse(p,linkage, varargin{:});
 
@@ -51,7 +51,7 @@ switch linkage
 %             theta2=omegaInput*t;
 %             [t3o, t3c, t4o, t4c]=fourbar_position(a, b, c, d, theta2);
 
-            [a3, a4, w3, w4, t3o, t4o, t3c, t4c, theta2]=fourbar_acceleration(a,b,c,d,alphaInput,omegaInput, t);
+            [a3, a4, w3, w4, t3o, t4o, t3c, t4c, theta2]=fourbar_acceleration(a,b,c,d,alphaInput,omegaInput, t, groundOrientation);
 
 
 
@@ -64,11 +64,11 @@ switch linkage
             end
             
             % update angles ground orientation
-            theta2=theta2+groundOrientation;
-            t3o=t3o+groundOrientation;
-            t4o=t4o+groundOrientation;
-            t3c=t3c+groundOrientation;
-            t4c=t4c+groundOrientation;
+%             theta2=theta2+groundOrientation;
+%             t3o=t3o+groundOrientation;
+%             t4o=t4o+groundOrientation;
+%             t3c=t3c+groundOrientation;
+%             t4c=t4c+groundOrientation;
             
             
             % trace

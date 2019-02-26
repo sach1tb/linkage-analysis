@@ -1,13 +1,15 @@
-function [t3o, t3c, t4o, t4c, A, B, C]=fourbar_position(a, b, c, d, t2)
-% fourbar_position performs position analysis of a fourbar linkage with pin
-% joints only, where the ground link is R1, input link (crank) is R2,
-% floating link is R3 and output link (rocker) is R4
+function [t3o, t3c, t4o, t4c, A, B, C]=fourbar_position1(a, b, c, d, t2, t1)
+% fourbar_position performs position analysis of a fourbar linkage
+% according to the convention in fourbar.png
 % 
 % Syntax
 %
 %   [t3o, ~, t4o]=fourbar_position(a, b, c, d, t2)
+%   [t3o, ~, t4o]=fourbar_position(a, b, c, d, t2, t1)
 %   [~, t3c, ~, t4c]=fourbar_position(a, b, c, d, t2)
+%   [~, t3c, ~, t4c]=fourbar_position(a, b, c, d, t2, t1)
 %   [t3o, t3c, t4o, t4c, A, B, C]=fourbar_position(a, b, c, d, t2)
+%   [t3o, t3c, t4o, t4c, A, B, C]=fourbar_position(a, b, c, d, t2, t1)
 %
 % Description
 %   [t3o, ~, t4o]=fourbar_position(a, b, c, d, t2) takes as input the link
@@ -25,32 +27,32 @@ function [t3o, t3c, t4o, t4c, A, B, C]=fourbar_position(a, b, c, d, t2)
 % Reference
 %   [1] R. L. Norton, Design of Machinery, McGrawHill
 %
-% SB, MEE320, NIU, Fall 2016
+% SB, MEE320, NIU, 2018
+
+if nargin<6, t1=0; end
+
+K1=2*d*c*cos(t1)-2*a*c*cos(t2);
+K2=2*d*c*sin(t1)-2*a*c*sin(t2);
+K3=2*a*d*sin(t1).*sin(t2) + 2*a*d*cos(t1).*cos(t2);
+K4=b^2-a^2-c^2-d^2;
+
+A=K4+K1+K3;
+B=-2*K2;
+C=K4-K1+K3;
+
+t4c=2*atan((-B-sqrt(B.^2-4*A.*C))./(2*A));
+t4o=2*atan((-B+sqrt(B.^2-4*A.*C))./(2*A));
 
 
-% equation 4.8a
-K1=d/a;
-K2=d/c;
-K3=(a^2-b^2+c^2+d^2)/(2*a*c);
-
-% equation 4.10a
-A=cos(t2)-K1-K2*cos(t2)+K3;
-B=-2*sin(t2);
-C=K1-(K2+1)*cos(t2)+K3;
-
-% equation 4.10b
-t4o=2*atan((-B-sqrt(B.^2-4*A.*C))./(2*A));
-
-t4c=2*atan((-B+sqrt(B.^2-4*A.*C))./(2*A));
-
-% equation 4.11b 
-K4=d/b;
-K5=(c^2-d^2-a^2-b^2)/(2*a*b);
+K5=2*a*b*cos(t2)-2*b*d*cos(t1);
+K6=2*a*b*sin(t2)-2*b*d*sin(t1);
+K7=2*a*d*sin(t1).*sin(t2) + 2*a*d*cos(t1).*cos(t2);
+K8=(c^2-d^2-a^2-b^2);
 
 % equation 4.12
-D=cos(t2)-K1+K4*cos(t2)+K5;
-E=-2*sin(t2);
-F=K1+(K4-1)*cos(t2)+K5;
+D=K8+K7+K5;
+E=-2*K6;
+F=K8-K5+K7;
 
-t3o=2*atan((-E-sqrt(E.^2-4*D.*F))./(2*D));
 t3c=2*atan((-E+sqrt(E.^2-4*D.*F))./(2*D));
+t3o=2*atan((-E-sqrt(E.^2-4*D.*F))./(2*D));
