@@ -17,6 +17,9 @@ function [t3o, t3c, t4o, t4c, A, B, C]=fourbar_position1(a, b, c, d, t2, t1)
 %   and returns the angles theta_3 and theta_4 in radians in the open 
 %   configuration
 %
+%   [t3o, ~, t4o]=fourbar_position(a, b, c, d, t2, t1) allows a tilted
+%   ground with angle t1 in radians
+%
 %   [~, t3c, ~, t4c]=fourbar_position(a, b, c, d, t2) for cross
 %   configuration
 %
