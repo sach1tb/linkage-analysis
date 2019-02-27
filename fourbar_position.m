@@ -1,4 +1,4 @@
-function [t3o, t3c, t4o, t4c, A, B, C]=fourbar_position1(a, b, c, d, t2, t1)
+function [t3o, t3c, t4o, t4c, A, B, C]=fourbar_position(a, b, c, d, t2, t1)
 % fourbar_position performs position analysis of a fourbar linkage
 % according to the convention in fourbar.png
 % 
