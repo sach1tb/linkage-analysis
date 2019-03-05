@@ -4,10 +4,11 @@ o2a=15; ab=50; bo4=41.5; o2o4=sqrt(38^2+7.8^2);
 ac=61.9; o4c=39.3; o4d=40.1; bd=55.8; 
 ce=36.7; de=39.4; ef=65.7; cf=49;
 
+% link lengths and ground orientation as parameters to be passed to fsolve
 ll=[o2a; ab; bo4; o2o4; ac; o4c; o4d; bd; ce; de; ef; cf];
 to2o4=190*pi/180;
 
-% initial guess by eyeballing the angles on the slides
+% initial guess by eyeballing the angles on the lecture slides
 x0 = [120, 240, 210, 280, 120, 190, 150, 280, 280, 250]*pi/180;
 
 % angular speed
@@ -41,6 +42,8 @@ tef=x(9,:);
 tcf=x(10,:);
 
 
+% position of each point on the linkage
+o2x=0; o2y=0;
 o4x=o2o4*cos(to2o4); o4y=o2o4*sin(to2o4);
 ax=o2a*cos(to2a); ay=o2a*sin(to2a);
 bx=o2a*cos(to2a)+ab*cos(tab); by=o2a*sin(to2a)+ab*sin(tab);
@@ -61,6 +64,7 @@ plot (fx, fy, 'linewidth', 2);
 set(gca, 'fontsize', 24, 'fontname', 'times');
 axis image;
 grid on;
+title('foot path');
 
 subplot(1,3,3);
 plot(t, fx, 'linewidth', 2);
@@ -115,6 +119,8 @@ F(10)=ce*sin(tce)+ef*sin(tef)-cf*sin(tcf);
 end
 
 function plot_linkage(o2x,o2y, o4x, o4y, ax,ay, bx,by, cx,cy, dx,dy, ex,ey, fx,fy, ii)
+
+% connect points using lines
 
 plot([ax(ii), bx(ii)], [ay(ii), by(ii)], 'r', 'linewidth', 2);
 hold on;

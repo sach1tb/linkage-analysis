@@ -10,9 +10,8 @@ function [a3, a4, w3, w4, t3o, t4o, t3c, t4c, t2]=fourbar_acceleration(a,b,c,d,a
 
 
 w2=w20+alpha2*t;
-[w3, w4]=fourbar_velocity(a, b, c, d, w2, t, t1);
 t2=w20.*t+0.5*alpha2*t.^2;
-[t3o, t3c, t4o, t4c]=fourbar_position(a, b, c, d, t2, t1);
+[w3, w4, t3o, t4o, t3c, t4c]=fourbar_velocity(a, b, c, d, w2, t, t1, t2);
 
 
 % acceleration analysis

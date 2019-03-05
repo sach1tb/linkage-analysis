@@ -14,26 +14,30 @@ simTime=2*pi/w2; % multiply by the number of cycles you want to see
 % linspace linearly spaces the time into 100 equal sections
 t=linspace(0,simTime, 100);
 to2a=w2*t; % theta_2
-% (1) note that the fourbar_position solves a linkage in the fourbar.png
+
+% note that the fourbar_position solves a linkage in the fourbar.png
 % orientation, so if a vector in the equation is not setup that way, we
 % should make sure that the angle is updated.
 % e.g. the equation R_O2A + R_AB + R_BO4 - R_O2O4 = 0 will be solved as
 % R_O2A + R_AB - R_O4B - R_O2O4 = 0, so to get angle that BO4 we have to
 % add pi (Slide 21, Lecture 11)
+
+
+% (1) 
 [~, tab, ~, to4b]=fourbar_position(o2a, ab, bo4, o2o4, to2a, to2o4);
 tbo4=to4b+pi;
 
 % (2)
 [tac, ~, to4c]=fourbar_position(o2a, ac, o4c, o2o4, to2a, to2o4);
 
-% (3) note that the ground is oriented at pi since the loop travels
+% (3) ground is oriented at pi since the loop travels
 % backward
 [~, ~,~, to4d]=fourbar_position(bo4, bd,o4d,  0, to4b, pi);
 
 % (4)
 [tce, ~, tde]=fourbar_position(o4c, ce, de,o4d, to4c, to4d);
 
-% (5) note that the ground is oriented at pi
+% (5) ground is oriented at pi
 [~,tef, ~, tcf]=fourbar_position(ce, ef, cf, 0, tce, pi);
 
 
@@ -67,6 +71,7 @@ plot (fx, fy, 'linewidth', 2);
 set(gca, 'fontsize', 24, 'fontname', 'times');
 axis image;
 grid on;
+title('foot path');
 
 subplot(1,3,3);
 plot(t, fx, 'linewidth', 2);
@@ -80,6 +85,8 @@ legend('F_x', 'F_y');
 
 
 function plot_linkage(o2x,o2y, o4x, o4y, ax,ay, bx,by, cx,cy, dx,dy, ex,ey, fx,fy, ii)
+
+% connect points using lines
 
 plot([ax(ii), bx(ii)], [ay(ii), by(ii)], 'r', 'linewidth', 2);
 hold on;
