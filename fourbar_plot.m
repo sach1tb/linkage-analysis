@@ -3,6 +3,11 @@ function [t1,t2, t3, t4]=fourbar_plot(a,b,c,d,BAP,APlen, t2,t3,t4,t1, clrs)
 % BAP and APlen is the angle it makes with the floating
 % link and the distance of the coupler link from the joint between
 % the crank and the floater 
+%
+% % example use:
+% a=40; b=60; c=30; d=55; t2=2*pi/3; t1=0;
+% [t3o, t3c, t4o, t4c, A, B, C]=fourbar_position(a, b, c, d, t2, t1); 
+% fourbar_plot(a, b, c, d, 0, 0, t2, t3o, t4o, t1, eye(3))
 
 % fourbar plot automatically adds ground orientation
 opos=0*exp(1i*t1);
@@ -52,5 +57,7 @@ quiver(real(dpos), imag(dpos), ...
     real(cpos-dpos), imag(cpos-dpos), 0, 'color', clrs(3,:), ...
     'linewidth', 2);
 grid on;
-axis image
+axis image;
+axis([-a, d+c, min(-a, -c), max(a,c)]);
+
 axis off;
