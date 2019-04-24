@@ -2,11 +2,18 @@ clear variables
 
 % sylvester pantograph
 % see sylvester_pantograph.png
+% convention is that lower case letters denote scalars and so the order
+% does not matter, but upper case letters denote vectors so the order
+% determines the direction of the vector.
+%
+% az=za=10; but tAZ is the orientation of vector AZ and is not the same as 
+% tZA. To relate the two, you must use a constraint, for e.g., tAZ=tZA+pi; 
 az=10; ab=40; bd=ab; de=40; ef=de;
 by=de; ye=bd; yz=54;
 
-% angular speed
+% angular speed of the crank or input link
 wAZ=2; % rad/s
+aAZ=0;
 simTime=2*2*pi/wAZ; % multiply by the number of cycles you want to see
 
 % *** Processing ***
@@ -18,7 +25,7 @@ tYZ=pi/4*ones(1,numel(t));
 
 % note that the fourbar_position solves a linkage in the fourbar.png
 
-% (1) 
+% (1) R_AZ + R_BA - R_BY - R_YZ = 0
 [wBA, ~, wBY, ~, tBA, ~, tBY]=fourbar_velocity(az, ab, by, yz, wAZ, tAZ, 0, tYZ);
 tYB=tBY+pi;
 tDB=tBA;

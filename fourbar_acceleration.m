@@ -6,9 +6,15 @@ function [a3o, a3c, a4o, a4c, w3o, w3c, w4o, w4c, t3o, t3c, t4o, t4c]=...
 % Syntax
 %
 %   [a3o, ~, a4o, ~, w3o, ~, w4o, ~, t3o, ~, t4o]=fourbar_acceleration(a, b, c, d, a2, w2, t2)
-%
+%   [a3o, ~, a4o, ~, w3o, ~, w4o, ~, t3o, ~, t4o]=fourbar_acceleration(a, b, c, d, a2, w2, t2, a1, w1, t1)
 % Description
 %
+%   [a3o, ~, a4o, ~, w3o, ~, w4o, ~, t3o, ~, t4o]=fourbar_acceleration(a, b, c, d, a2, w2, t2)
+%   takes as input the link lengths a, b, c, d, and the angular acceleration(s)
+%   a2 in rad/s^2, angular velocity(s) w2 in rad/s and angle(s) t2 for the 
+%   input link in radians and returns the angular accelerations a3o and a4o 
+%   angular velocities w3o and w4o and orientations for the 
+%   coupler and output links in the open configuration
 
 % w2=w20+a2*t;
 % t2=w20.*t+0.5*a2*t.^2;
@@ -17,6 +23,13 @@ if nargin < 8
     w1=0;
     t1=0;
 end
+
+% if t1 is passed as a single value but t2 as more then
+if numel(t2) > 1 && numel(t1) ==1
+    t1=t1*ones(1,numel(t2));
+end
+
+
 [w3o, w3c, w4o, w4c, ...
     t3o, t3c, t4o, t4c]=fourbar_velocity(a, b, c, d, w2, t2, w1, t1);
 

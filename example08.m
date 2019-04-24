@@ -2,10 +2,18 @@ clear variables
 
 % sylvester pantograph
 % see sylvester_pantograph.png
+% convention is that lower case letters denote scalars and so the order
+% does not matter, but upper case letters denote vectors so the order
+% determines the direction of the vector.
+%
+
+% link lengths
+% az=za=10; but tAZ is the orientation of vector AZ and is not the same as 
+% tZA. To relate the two, you must use a constraint, for e.g., tAZ=tZA+pi; 
 az=10; ab=40; bd=ab; de=40; ef=de;
 by=de; ye=bd; yz=54;
 
-% angular speed
+% angular speed of the crank or input link
 wAZ=2; % rad/s
 aAZ=0;
 simTime=2*2*pi/wAZ; % multiply by the number of cycles you want to see
@@ -19,7 +27,7 @@ tYZ=pi/4*ones(1,numel(t));
 
 % note that the fourbar_position solves a linkage in the fourbar.png
 
-% (1) 
+% (1) R_AZ + R_BA - R_BY - R_YZ = 0
 [aBA, ~, aBY, ~, wBA, ~, wBY, ~, tBA, ~, tBY]=fourbar_acceleration(az, ab, by, yz, aAZ, wAZ, tAZ, 0, 0, tYZ);
 tYB=tBY+pi;
 tDB=tBA;
@@ -66,7 +74,7 @@ axis image;
 grid on;
 title('foot path');
 
-subplot(2,3,3);
+subplot(2,3,4);
 plot(t, fx, 'linewidth', 2);
 hold on;
 plot(t, fy, 'linewidth', 2);
@@ -75,7 +83,7 @@ set(gca, 'fontsize', 24, 'fontname', 'times');
 xlabel('time (s)');
 legend('F_x', 'F_y');
 
-subplot(2,3,4);
+subplot(2,3,5);
 fdotx=-ef*wFE.*sin(tFE) - ye*wEY.*sin(tEY);
 fdoty=ef*wFE.*cos(tFE) + ye*wEY.*cos(tEY);
 
@@ -86,7 +94,7 @@ set(gca, 'fontsize', 24, 'fontname', 'times');
 xlabel('time (s)');
 ylabel('F(speed) mm/s');
 
-subplot(2,3,5);
+subplot(2,3,6);
 fddx=-ef*aFE.*sin(tFE) -ef*wFE.^2.*cos(tFE) - ye*aEY.*sin(tEY) - ye*wEY.^2.*cos(tEY);
 fddy=ef*aFE.*cos(tFE) -ef*wFE.^2.*sin(tFE) + ye*aEY.*cos(tEY) - ye*wEY.^2.*sin(tEY);
 
