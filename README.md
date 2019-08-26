@@ -10,4 +10,4 @@ Example scripts to get started:
 3) Jansen's linkage position analysis using numerical methods
 
 TODO:
-- make analysis scripts consistent so that if you write a vector loop to solve a complex linkage, then you do the same for a fourbar  
+- make analysis scripts consistent for fourbar and walker legs  
