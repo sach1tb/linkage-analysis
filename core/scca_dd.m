@@ -150,6 +150,7 @@ plot((base_rad+cam(:,2)).*cos(cam(:,1)), (base_rad+cam(:,2)).*sin(cam(:,1)),...
     'k--', 'linewidth', 1);
 plot((base_rad).*cos(cam(:,1)), (base_rad).*sin(cam(:,1)),...
     'k--', 'linewidth', 1);
+title(fun, 'fontweight', 'normal');
 
 
 function [S, V, A, J, xz]=svaj(beta, h, b, c, d, Ca, omega)

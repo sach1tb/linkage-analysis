@@ -9,6 +9,8 @@ clear variables
 % of each link's center of gravity, all locations marked with '**'
 % 
 
+addpath ../core
+
 % link properties **
 % a (crank)
 a=0.86; % length m

@@ -24,7 +24,7 @@ function linkage_analysis
 %
 % SB, NIU, 2019
 
-
+addpath ../core
 
 % ** angular speed of the crank or input link
 omegaAZ=2; % rad/s
@@ -51,7 +51,7 @@ links.BD=link(55.8, 0, 0, 0, 10, 10, 0, [0,0], 0);
 links.CE=link(36.7, 0, 0, 0, 10, 10, 0, [0,0], 0);
 links.DE=link(39.4, 0, 0, 0, 10, 10, 0, [0,0], 0);
 links.EF=link(65.7, 0, 0, 0, 10, 10, 0, [0,0], 0);
-links.CF=link(49, 0, 0, 0, 10, 10, 0, [0,0], 0);
+links.CF=link(49.0, 0, 0, 0, 10, 10, 0, [0,0], 0);
 
 % update links
 links=add_links(links);

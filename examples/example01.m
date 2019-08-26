@@ -2,6 +2,10 @@ clear variables;
 % see fourbar.png for the meaning of each parameter
 % parameters >> these can be changed
 % link lengths
+
+% the line below adds the core scripts to the current working directory
+addpath ../core
+
 a=1.36; b=10; c=10; d=15;
 APlen=20; BAP=0; % BAP
 w2=2; % rad/s

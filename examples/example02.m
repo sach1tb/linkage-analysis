@@ -3,6 +3,7 @@
 % the solution can go either way! 
 % so open and crossed depends on the inital
 % estimate
+addpath ../core
 
 clear variables
 

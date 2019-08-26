@@ -1,3 +1,7 @@
+clear variables;
+
+addpath ../core
+
 % jansen linkage analysis, values from Jansens_Linkage_Wikipedia.svg
 
 o2a=15; ab=50; bo4=41.5; o2o4=sqrt(38^2+7.8^2);

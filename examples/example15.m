@@ -23,6 +23,9 @@ function example15
 
 clear variables;
 
+% the line below adds the core scripts to the current working directory
+addpath ../core
+
 % ** link lengths use lower case letters here as these are scalars.
 % make sure to specify all link lengths
 % az=za=10; but thetaAZ is the orientation of vector AZ and is not the same as 
