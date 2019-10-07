@@ -1,5 +1,6 @@
 % jansen linkage analysis, values from Jansens_Linkage_Wikipedia.svg
 
+addpath ../core
 clear variables
 o2a=15; ab=50; bo4=41.5; o2o4=sqrt(38^2+7.8^2);
 ac=61.9; o4c=39.3; o4d=40.1; bd=55.8;

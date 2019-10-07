@@ -1,4 +1,3 @@
-addpath ../core
 clear variables;
 % see crankslider.png for the meaning of each parameter
 % parameters >> these can be changed

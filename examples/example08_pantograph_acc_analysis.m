@@ -3,11 +3,20 @@ clear variables
 
 % sylvester pantograph
 % see sylvester_pantograph.png
+% convention is that lower case letters denote scalars and so the order
+% does not matter, but upper case letters denote vectors so the order
+% determines the direction of the vector.
+%
+
+% link lengths
+% az=za=10; but tAZ is the orientation of vector AZ and is not the same as 
+% tZA. To relate the two, you must use a constraint, for e.g., tAZ=tZA+pi; 
 az=10; ab=40; bd=ab; de=40; ef=de;
 by=de; ye=bd; yz=54;
 
-% angular speed
+% angular speed of the crank or input link
 wAZ=2; % rad/s
+aAZ=0;
 simTime=2*2*pi/wAZ; % multiply by the number of cycles you want to see
 
 % *** Processing ***
@@ -19,14 +28,20 @@ tYZ=pi/4*ones(1,numel(t));
 
 % note that the fourbar_position solves a linkage in the fourbar.png
 
-% (1) 
-[tBA, ~, tBY]=fourbar_position(az, ab, by, yz, tAZ, tYZ);
+% (1) R_AZ + R_BA - R_BY - R_YZ = 0
+[aBA, ~, aBY, ~, wBA, ~, wBY, ~, tBA, ~, tBY]=fourbar_acceleration(az, ab, by, yz, aAZ, wAZ, tAZ, 0, 0, tYZ);
 tYB=tBY+pi;
 tDB=tBA;
+wYB=wBY;
+wDB=wBA;
+aYB=aBY;
+aDB=aBA;
 
 % (2) 
-[tED,~, tEY]=fourbar_position(bd, de,ye,  by, tDB, tYB);
+[aED, ~, aEY, ~, wED, ~, wEY, ~, tED,~, tEY]=fourbar_acceleration(bd, de,ye,  by, aDB, wDB, tDB, aYB, wYB, tYB);
 tFE=tED;
+wFE=wED;
+aFE=aED;
 
 % extract positions of all points
 zx=zeros(1,numel(t)); zy=zeros(1,numel(t));
@@ -37,20 +52,22 @@ dx=bx+bd*cos(tDB); dy=by+bd*sin(tDB);
 ex=dx+de*cos(tED); ey=dy+de*sin(tED);
 fx=ex+ef*cos(tFE); fy=ey+ef*sin(tFE);
 
+
 % animate
-for ii=1:numel(t)
-    figure(1); gcf; clf;
-    plot_linkage(ax,ay, bx,by, dx,dy, ex,ey, fx,fy, zx, zy, yx, yy,  ii);
-    drawnow;
-end
+% for ii=1:numel(t)
+%     figure(1); gcf; clf;
+%     plot_linkage(ax,ay, bx,by, dx,dy, ex,ey, fx,fy, zx, zy, yx, yy,  ii);
+%     drawnow;
+% end
+
 % keyboard
 figure(1); gcf; clf; % new figure window for plot
 ii=1;
-subplot(1,3,1);
+subplot(2,3,1);
 plot_linkage(ax,ay, bx,by, dx,dy, ex,ey, fx,fy, zx, zy, yx, yy, ii);
 
 
-subplot(1,3,2);
+subplot(2,3,2);
 
 plot (fx, fy, 'linewidth', 2); 
 set(gca, 'fontsize', 24, 'fontname', 'times');
@@ -58,7 +75,7 @@ axis image;
 grid on;
 title('foot path');
 
-subplot(1,3,3);
+subplot(2,3,4);
 plot(t, fx, 'linewidth', 2);
 hold on;
 plot(t, fy, 'linewidth', 2);
@@ -67,6 +84,29 @@ set(gca, 'fontsize', 24, 'fontname', 'times');
 xlabel('time (s)');
 legend('F_x', 'F_y');
 
+subplot(2,3,5);
+fdotx=-ef*wFE.*sin(tFE) - ye*wEY.*sin(tEY);
+fdoty=ef*wFE.*cos(tFE) + ye*wEY.*cos(tEY);
+
+plot(t, sqrt(fdotx.^2+fdoty.^2), 'linewidth', 2);
+grid on;
+ytickformat('%.3f')
+set(gca, 'fontsize', 24, 'fontname', 'times');
+xlabel('time (s)');
+ylabel('F(speed) mm/s');
+
+subplot(2,3,6);
+fddx=-ef*aFE.*sin(tFE) -ef*wFE.^2.*cos(tFE) - ye*aEY.*sin(tEY) - ye*wEY.^2.*cos(tEY);
+fddy=ef*aFE.*cos(tFE) -ef*wFE.^2.*sin(tFE) + ye*aEY.*cos(tEY) - ye*wEY.^2.*sin(tEY);
+
+plot(t, sqrt(fddx.^2+fddy.^2), 'linewidth', 2);
+grid on;
+hold on;
+sp=sqrt(fdotx.^2+fdoty.^2);
+ytickformat('%.3f')
+set(gca, 'fontsize', 24, 'fontname', 'times');
+xlabel('time (s)');
+ylabel('F_{acc} mm/s^2');
 
 
 function plot_linkage(ax,ay, bx,by, dx,dy, ex,ey, fx,fy,zx, zy, yx, yy, ii)
@@ -92,6 +132,7 @@ text(ex(ii)*1.1, ey(ii)*1.1, 'E', 'fontsize', 16);
 text(fx(ii)*1.1, fy(ii)*1.1, 'F', 'fontsize', 16);
 text(zx(ii)*1.1, zy(ii)*1.1, 'Z', 'fontsize', 16);
 text(yx(ii)*1.1, yy(ii)*1.1, 'Y', 'fontsize', 16);
+
 
 axis image;
 axis([-100 100 -100 100]);
