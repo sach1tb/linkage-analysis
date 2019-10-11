@@ -2,10 +2,10 @@
 
 addpath ../core
 clear variables
-o2a=15; ab=50; bo4=41.5; o2o4=sqrt(38^2+7.8^2);
-ac=61.9; o4c=39.3; o4d=40.1; bd=55.8;
-ce=36.7; de=39.4; ef=65.7; cf=49;
-to2o4=190*pi/180;
+laz=15; lab=50; lby=41.5; lyz=sqrt(38^2+7.8^2);
+lac=61.9; lcy=39.3; ldy=40.1; lbd=55.8;
+lce=36.7; lde=39.4; lef=65.7; lcf=49;
+tzy=190*pi/180;
 
 % angular speed
 w2=2; % rad/s
@@ -14,49 +14,49 @@ simTime=2*pi/w2; % multiply by the number of cycles you want to see
 % *** Processing ***
 % linspace linearly spaces the time into 100 equal sections
 t=linspace(0,simTime, 100);
-to2a=w2*t; % theta_2
+tza=w2*t; % theta_2
 
 % note that the fourbar_position solves a linkage in the fourbar.png
 % orientation, so if a vector in the equation is not setup that way, we
 % should make sure that the angle is updated.
-% e.g. the equation R_O2A + R_AB + R_BO4 - R_O2O4 = 0 will be solved as
-% R_O2A + R_AB - R_O4B - R_O2O4 = 0, so to get angle that BO4 we have to
+% e.g. the equation R_ZA + R_AB + R_BY - R_ZY = 0 will be solved as
+% R_ZA + R_AB - R_YB - R_ZY = 0, so to get angle that by we have to
 % add pi (Slide 21, Lecture 11)
 
 
 % (1) 
-[~, tab, ~, to4b]=fourbar_position(o2a, ab, bo4, o2o4, to2a, to2o4);
+[~, tab, ~, to4b]=fourbar_position(laz, lab, lby, lyz, tza, tzy);
 tbo4=to4b+pi;
 
 % (2)
-[tac, ~, to4c]=fourbar_position(o2a, ac, o4c, o2o4, to2a, to2o4);
+[tac, ~, to4c]=fourbar_position(laz, lac, lcy, lyz, tza, tzy);
 
 % (3) ground is oriented at pi since the loop travels
 % backward
-[~, ~,~, to4d]=fourbar_position(bo4, bd,o4d,  0, to4b, pi);
+[~, ~,~, to4d]=fourbar_position(lby, lbd,ldy,  0, to4b, pi);
 
 % (4)
-[tce, ~, tde]=fourbar_position(o4c, ce, de,o4d, to4c, to4d);
+[tce, ~, tde]=fourbar_position(lcy, lce, lde,ldy, to4c, to4d);
 
 % (5) ground is oriented at pi
-[~,tef, ~, tcf]=fourbar_position(ce, ef, cf, 0, tce, pi);
+[~,tef, ~, tcf]=fourbar_position(lce, lef, lcf, 0, tce, pi);
 
 
 % extract positions of all points
-o2x=0; o2y=0;
-o4x=o2o4*cos(to2o4); o4y=o2o4*sin(to2o4);
-ax=o2a*cos(to2a); ay=o2a*sin(to2a);
-bx=o2a*cos(to2a)+ab*cos(tab); by=o2a*sin(to2a)+ab*sin(tab);
-cx=o2o4*cos(to2o4)+o4c*cos(to4c); cy=o2o4*sin(to2o4)+o4c*sin(to4c);
-dx=o2o4*cos(to2o4)+o4d*cos(to4d); dy=o2o4*sin(to2o4)+o4d*sin(to4d);
-ex=o2o4*cos(to2o4)+o4d*cos(to4d)+de*cos(tde);ey=o2o4*sin(to2o4)+o4d*sin(to4d)+de*sin(tde);
-fx=o2a*cos(to2a)+ac*cos(tac)+cf*cos(tcf);fy=o2a*sin(to2a)+ac*sin(tac)+cf*sin(tcf);
+zx=0; zy=0;
+yx=lyz*cos(tzy); yy=lyz*sin(tzy);
+ax=laz*cos(tza); ay=laz*sin(tza);
+bx=laz*cos(tza)+lab*cos(tab); by=laz*sin(tza)+lab*sin(tab);
+cx=lyz*cos(tzy)+lcy*cos(to4c); cy=lyz*sin(tzy)+lcy*sin(to4c);
+dx=lyz*cos(tzy)+ldy*cos(to4d); dy=lyz*sin(tzy)+ldy*sin(to4d);
+ex=lyz*cos(tzy)+ldy*cos(to4d)+lde*cos(tde);ey=lyz*sin(tzy)+ldy*sin(to4d)+lde*sin(tde);
+fx=laz*cos(tza)+lac*cos(tac)+lcf*cos(tcf);fy=laz*sin(tza)+lac*sin(tac)+lcf*sin(tcf);
 
 
 % animate
 for ii=1:numel(t)
     figure(1); gcf; clf;
-    plot_linkage(o2x,o2y, o4x, o4y, ax,ay, bx,by, cx,cy, dx,dy, ex,ey, fx,fy, ii);
+    plot_linkage(zx,zy, yx, yy, ax,ay, bx,by, cx,cy, dx,dy, ex,ey, fx,fy, ii);
     drawnow;
 end
 
@@ -64,7 +64,7 @@ end
 figure(1); gcf; clf; % new figure window for plot
 ii=1;
 subplot(1,3,1);
-plot_linkage(o2x,o2y, o4x, o4y, ax,ay, bx,by, cx,cy, dx,dy, ex,ey, fx,fy, ii);
+plot_linkage(zx,zy, yx, yy, ax,ay, bx,by, cx,cy, dx,dy, ex,ey, fx,fy, ii);
 
 subplot(1,3,2);
 
@@ -85,19 +85,19 @@ legend('F_x', 'F_y');
 
 
 
-function plot_linkage(o2x,o2y, o4x, o4y, ax,ay, bx,by, cx,cy, dx,dy, ex,ey, fx,fy, ii)
+function plot_linkage(zx,zy, yx, yy, ax,ay, bx,by, cx,cy, dx,dy, ex,ey, fx,fy, ii)
 
 % connect points using lines
 
 plot([ax(ii), bx(ii)], [ay(ii), by(ii)], 'r', 'linewidth', 2);
 hold on;
-plot(o2x,o2y, 'ks', 'markersize', 8);
-plot(o4x, o4y, 'rs', 'markersize', 8);
-plot([o2x, ax(ii)], [o2y, ay(ii)], 'r', 'linewidth', 2);
+plot(zx,zy, 'ks', 'markersize', 8);
+plot(yx, yy, 'rs', 'markersize', 8);
+plot([zx, ax(ii)], [zy, ay(ii)], 'r', 'linewidth', 2);
 plot([ax(ii), cx(ii)], [ay(ii), cy(ii)], 'k', 'linewidth', 2);
-plot([o4x, dx(ii)], [o4y, dy(ii)], 'g', 'linewidth', 2);
-plot([o4x, cx(ii)], [o4y, cy(ii)], 'k', 'linewidth', 2);
-plot([o4x, bx(ii)], [o4y, by(ii)], 'g', 'linewidth', 2);
+plot([yx, dx(ii)], [yy, dy(ii)], 'g', 'linewidth', 2);
+plot([yx, cx(ii)], [yy, cy(ii)], 'k', 'linewidth', 2);
+plot([yx, bx(ii)], [yy, by(ii)], 'g', 'linewidth', 2);
 plot([dx(ii), ex(ii)], [dy(ii), ey(ii)], 'k', 'linewidth', 2);
 plot([cx(ii), ex(ii)], [cy(ii), ey(ii)], 'b', 'linewidth', 2);
 plot([cx(ii), fx(ii)], [cy(ii), fy(ii)], 'b', 'linewidth', 2);
