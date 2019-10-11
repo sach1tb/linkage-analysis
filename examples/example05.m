@@ -3,7 +3,7 @@ clear variables;
 % see crankslider.png for the meaning of each parameter
 % parameters >> these can be changed
 % link lengths
-a=40; b=120; c=80; 
+a=40; b=120; c=0; 
 w2=2; % rad/s
 simTime=2*pi/w2*2; % multiply by the number of cycles you want to see 
 

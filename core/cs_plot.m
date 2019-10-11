@@ -53,5 +53,5 @@ quiver(real(o4pos), imag(o4pos), ...
 
 grid on;
 axis image
-axis([-abs(d)-a, abs(d)+a, min(-a,-c), max(a,c)]);
+axis([-abs(b)-a, abs(b)+a, min(-a,-c), max(a,c)]);
 axis off;
