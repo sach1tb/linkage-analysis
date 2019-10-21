@@ -1,3 +1,4 @@
+addpath ../core
 % complex linkage analysis for analyzing complex 1 dof linkages that consist of
 % multiple fourbars 
 

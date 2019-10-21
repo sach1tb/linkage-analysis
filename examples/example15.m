@@ -21,7 +21,6 @@ function example15
 %
 % SB, NIU, 2019
 
-clear variables;
 
 % the line below adds the core scripts to the current working directory
 addpath ../core

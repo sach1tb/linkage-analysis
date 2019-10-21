@@ -24,7 +24,7 @@ function example14
 %
 % SB, NIU, 2019
 
-
+addpath ../core
 
 % ** angular speed of the crank or input link
 omegaAZ=2; % rad/s

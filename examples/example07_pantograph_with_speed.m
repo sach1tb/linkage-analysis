@@ -1,3 +1,4 @@
+addpath ../core
 clear variables
 
 % sylvester pantograph

@@ -1,3 +1,4 @@
+addpath ../core
 clear variables
 % energy method: gives input torque for a required
 % angular acceleration and velocity of a fourbar linkage

@@ -1,3 +1,4 @@
+addpath ../core
 clear variables
 % newtonian method: gives pin  joint forces and input torque for a required
 % angular acceleration and velocity of a fourbar linkage

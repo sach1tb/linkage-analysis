@@ -8,7 +8,7 @@ addpath ../core
 
 a=1.36; b=10; c=10; d=15;
 APlen=20; BAP=0; % BAP
-w2=2; % rad/s
+w2=-2; % rad/s
 simTime=2*pi/w2; % multiply by the number of cycles you want to see 
 
 % *** Processing ***
@@ -17,13 +17,13 @@ t=linspace(0,simTime, 100);
 t1=0; % ground orientation
 t2=w2*t; % theta_2
 [t3o, t3c, t4o, t4c]=fourbar_position(a, b, c, d, t2, t1);
-px=a*cos(t2)+APlen*cos(t3o+BAP);
-py=a*sin(t2)+APlen*sin(t3o+BAP);
+px=a*cos(t2)+APlen*cos(t3c+BAP);
+py=a*sin(t2)+APlen*sin(t3c+BAP);
 figure(1); gcf; clf;
 subplot(1,3,1);
 iter=30;
-fourbar_plot(a,b,c,d,BAP,APlen, t2(iter),t3o(iter),...
-    t4o(iter),t1, eye(3));
+fourbar_plot(a,b,c,d,BAP,APlen, t2(iter),t3c(iter),...
+    t4c(iter),t1, eye(3));
 plot(px,py, 'k-.', 'linewidth', 2);
 set(gca, 'fontsize', 24, 'fontname', 'times');
 subplot(1,3,2);
