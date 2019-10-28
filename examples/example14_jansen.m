@@ -1,4 +1,4 @@
-function linkage_analysis
+function example14_jansen
 % linkage_analysis performs motion analysis of complex linkages
 % according to the procedure described in doc/linkage_analysis.pdf
 % at this time, linkage analysis cannot solve fivebars so if you have a
@@ -51,7 +51,7 @@ links.BD=link(55.8, 0, 0, 0, 10, 10, 0, [0,0], 0);
 links.CE=link(36.7, 0, 0, 0, 10, 10, 0, [0,0], 0);
 links.DE=link(39.4, 0, 0, 0, 10, 10, 0, [0,0], 0);
 links.EF=link(65.7, 0, 0, 0, 10, 10, 0, [0,0], 0);
-links.CF=link(49.0, 0, 0, 0, 10, 10, 0, [0,0], 0);
+links.CF=link(49, 0, 0, 0, 10, 10, 0, [0,0], 0);
 
 % update links
 links=add_links(links);
@@ -59,7 +59,6 @@ links=add_links(links);
 
 % show animation (1=yes, 0=no);
 animate=1; 
-
 
 % ** link chains are successive positions on your linkage starting with
 % (0,0) global ground that is always specified as a single letter. Write

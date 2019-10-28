@@ -1,4 +1,4 @@
-classdef link
+classdef binary
    properties
        length;
        mass; 

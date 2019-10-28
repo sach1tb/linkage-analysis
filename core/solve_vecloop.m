@@ -6,7 +6,7 @@ cellarr=strsplit(vecloop, ' ');
 % check if it is valid
 for jj=1:2:numel(cellarr)-2
     if ~isfield(links, cellarr{jj}(2:3)) && cellarr{jj}(2) ~=cellarr{jj}(3)
-        error('check your vector loop equation');
+        error('check your vector loop equation, probably a link whose length is not specified');
     end
     % when a vector like RYY, RZZ is sent for a ternary link
     if ~isfield(links, cellarr{jj}(2:3)) && cellarr{jj}(2) ==cellarr{jj}(3)

@@ -3,3 +3,7 @@ function lnk=link(length, theta, omega, alpha, mass, moi, torque, force, rF)
 lnk=struct( 'length', length, 'theta', theta, 'omega', omega, ...
             'alpha', alpha, 'mass', mass, ...
             'moi', moi, 'torque', torque, 'force', force, 'rF', rF);
+        
+
+% keep updating the link positions
+% links=update_links(links);
