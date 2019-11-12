@@ -1,4 +1,4 @@
-function example13
+function example13_pantograph
 % linkage_analysis performs motion analysis of complex linkages
 % according to the procedure described in jansen_linkage.pdf
 % 

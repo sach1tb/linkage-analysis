@@ -37,10 +37,10 @@ function [t3o, t3c, t4o, t4c, A, B, C]=fourbar_position(a, b, c, d, t2, t1)
 
 if nargin<6, t1=0; end
 
-K1=2*d*c*cos(t1)-2*a*c*cos(t2);
-K2=2*d*c*sin(t1)-2*a*c*sin(t2);
-K3=2*a*d*sin(t1).*sin(t2) + 2*a*d*cos(t1).*cos(t2);
-K4=b^2-a^2-c^2-d^2;
+K1=2*d.*c.*cos(t1)-2*a.*c.*cos(t2);
+K2=2*d.*c.*sin(t1)-2*a.*c.*sin(t2);
+K3=2*a.*d.*sin(t1).*sin(t2) + 2*a.*d.*cos(t1).*cos(t2);
+K4=b.^2-a.^2-c.^2-d.^2;
 
 A=K4+K1+K3;
 B=-2*K2;
@@ -50,10 +50,10 @@ if A==0, A=eps; end
 t4c=2*atan((-B-sqrt(B.^2-4*A.*C))./(2*A));
 t4o=2*atan((-B+sqrt(B.^2-4*A.*C))./(2*A));
 
-K5=2*a*b*cos(t2)-2*b*d*cos(t1);
-K6=2*a*b*sin(t2)-2*b*d*sin(t1);
-K7=2*a*d*sin(t1).*sin(t2) + 2*a*d*cos(t1).*cos(t2);
-K8=(c^2-d^2-a^2-b^2);
+K5=2*a.*b.*cos(t2)-2*b.*d.*cos(t1);
+K6=2*a.*b.*sin(t2)-2*b.*d.*sin(t1);
+K7=2*a.*d.*sin(t1).*sin(t2) + 2*a.*d.*cos(t1).*cos(t2);
+K8=(c.^2-d.^2-a.^2-b.^2);
 
 
 D=K8+K7+K5;

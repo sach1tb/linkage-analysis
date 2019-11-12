@@ -7,5 +7,5 @@ for ii=1:numel(ff)
     eval(['ll=links.', ff{ii}, '.length/2;']);
     eval(['th=links.', ff{ii}, '.theta;']);
     eval(['om=links.', ff{ii}, '.omega;']);
-    eval(['cgvel.', ff{ii}, '=vel.' ff{ii}(2), '+[-ll*om.*sin(th); ll*om.*cos(th)];']);
+    eval(['cgvel.', ff{ii}, '=vel.' ff{ii}(2), '+[-ll.*om.*sin(th); ll.*om.*cos(th)];']);
 end

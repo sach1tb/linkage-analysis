@@ -11,6 +11,6 @@ for ii=2:numel(link_chains)
         eval(['th=links.', link_chains{ii}(jj), link_chains{ii}(jj-1), '.theta;']);
         eval(['om=links.', link_chains{ii}(jj), link_chains{ii}(jj-1), '.omega;']);
         eval(['al=links.', link_chains{ii}(jj), link_chains{ii}(jj-1), '.alpha;']);
-        eval(['acc.', link_chains{ii}(jj), '=acc.' link_chains{ii}(jj-1), '+[-ll*al.*sin(th) - ll*om.^2.*cos(th); ll*al.*cos(th) - ll*om.^2.*sin(th)];']);
+        eval(['acc.', link_chains{ii}(jj), '=acc.' link_chains{ii}(jj-1), '+[-ll.*al.*sin(th) - ll.*om.^2.*cos(th); ll.*al.*cos(th) - ll.*om.^2.*sin(th)];']);
     end
 end

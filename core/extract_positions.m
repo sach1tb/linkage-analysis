@@ -9,6 +9,6 @@ for ii=2:numel(link_chains)
         end
         eval(['ll=links.', link_chains{ii}(jj), link_chains{ii}(jj-1), '.length;']);
         eval(['th=links.', link_chains{ii}(jj), link_chains{ii}(jj-1), '.theta;']);
-        eval(['pos.', link_chains{ii}(jj), '=pos.' link_chains{ii}(jj-1), '+[ll*cos(th); ll*sin(th)];']);
+        eval(['pos.', link_chains{ii}(jj), '=pos.' link_chains{ii}(jj-1), '+[ll.*cos(th); ll.*sin(th)];']);
     end
 end
