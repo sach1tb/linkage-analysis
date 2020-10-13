@@ -58,6 +58,6 @@ quiver(real(dpos), imag(dpos), ...
     'linewidth', 2);
 grid on;
 axis image;
-axis([-a, d+c, min(-a, -c), max(a,c)]);
+axis([-d, d+c, -a-b-APlen, a+b+APlen]);
 
-axis off;
+box on;

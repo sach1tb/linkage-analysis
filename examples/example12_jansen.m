@@ -1,40 +1,29 @@
+function example12_jansen(za, wAZ, ab, by, zy, thetaYZ, ac, yc, yd, bd, ce, de, ef, cf)
+
 addpath ../core
-% complex linkage analysis for analyzing complex 1 dof linkages that consist of
-% multiple fourbars 
-
-% how to use this script
-% 1) synthesize your linkage
-% 
-% 2) draw vectors corresponding to the kinematic links with joints marked
-% using upper case letters. 
-%
-% 3) denote the vectors using the convention that R_AB is a vector
-% pointing from joint B to joint A; make sure that you draw the angle that
-% you will be measuring
-%
-% 4) write the vector loop equations for successive fourbar loops following
-% the convention as R_crank + R_coupler - R_rocker - R_ground = 0
-%
-% 5) add additional constraints so that each vector loop has two unknowns
-% only. e.g. if R_crank is not know for the second vector loop then see if
-% it relates to the orientation of an existing link
-%
-
-clear variables;
 
 % ** link lengths use lower case letters here as these are scalars.
 % make sure to specify all link lengths
 % az=za=10; but thetaAZ is the orientation of vector AZ and is not the same as 
 % tZA. To relate the two, you must use a constraint, for e.g., thetaAZ=tZA+pi; 
-lnk.za=15; lnk.ab=50; lnk.by=41.5; lnk.zy=sqrt(38^2+7.8^2);
-lnk.ac=61.9; lnk.yc=39.3; lnk.yd=40.1; lnk.bd=55.8; 
-lnk.ce=36.7; lnk.de=39.4; lnk.ef=65.7; lnk.cf=49;
+if nargin < 1
+    za=15; ab=50; by=41.5; zy=sqrt(38^2+7.8^2);
+    ac=61.9; yc=39.3; yd=40.1; bd=55.8; 
+    ce=36.7; de=39.4; ef=65.7; cf=49;
+    wAZ=2; % rad/s
+    % ** angle between the ground links
+    thetaYZ=190*pi/180;
+end
+
+lnk.za=za; lnk.ab=ab; lnk.by=by; lnk.zy=zy;
+lnk.ac=ac; lnk.yc=yc; lnk.yd=yd; lnk.bd=bd; 
+lnk.ce=ce; lnk.de=de; lnk.ef=ef; lnk.cf=cf;
 
 % ** units (cm, mm)
 units='mm';
 
 % ** angular speed of the crank or input link
-wAZ=2; % rad/s
+
 aAZ=0;
 % multiply by the number of cycles you want to see e.g. here we run for 2
 % cycles of the crank
@@ -47,8 +36,7 @@ poi='F';
 t=linspace(0,simTime, 100);
 thetaAZ=wAZ*t; % theta_2
 
-% ** angle between the ground links
-thetaYZ=190*pi/180*ones(1,numel(t));
+thetaYZ=thetaYZ*ones(1,numel(t));
 
 % note that the fourbar_* functions solve the linkage according to fourbar.png
 
@@ -123,16 +111,15 @@ fddy=lnk.ef*alphaFE.*cos(thetaFE) -lnk.ef*omegaFE.^2.*sin(thetaFE) ...
     + lnk.yd*alphaDY.*cos(thetaDY) - lnk.yd*omegaDY.^2.*sin(thetaDY);
 
 % animate
+
+
+figure(1); gcf; clf; % new figure window for plot
+
 for ii=1:numel(t)
-    figure(1); gcf; clf;
+    subplot(2,3,1); cla;
     plot_linkage(p,lnk, ii);
     drawnow;
 end
-
-figure(1); gcf; clf; % new figure window for plot
-ii=1;
-subplot(2,3,1);
-plot_linkage(p, lnk, ii);
 
 fs=16;
 subplot(2,3,2);
@@ -198,4 +185,3 @@ end
 axis image;
 axis([-100 100 -100 100]);
 axis off;
-end

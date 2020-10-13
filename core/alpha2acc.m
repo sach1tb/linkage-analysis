@@ -1,0 +1,6 @@
+function [ax, ay]= alpha2acc(th, r, omega, rdot, alpha, rddot)
+
+ax=-r.*omega.^2.*cos(th) -r.*alpha.*sin(th) ...
+    - rdot.*omega.*sin(th) + rddot.*cos(th);
+ay=-r.*omega.^2.*sin(th) + r.*alpha.*cos(th) ...
+    + rdot.*omega.*cos(th) + rddot.*sin(th);
