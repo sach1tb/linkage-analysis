@@ -2,20 +2,22 @@ function example15_pantograph_with_hoeken(rAZ, rBA, rBY, rYZ, tYZ, rCB, ...
             rXZ, tXZ, rDX, rED, rFE, rCD, rFC, rGF, wAZ, aAZ, t)
 %
 % SB, NIU, 2019
+%
+% *all units SI*
 
 addpath ../core
 
 
 if nargin < 1
-    rAZ=10;
-    rBA=25;
-    rBY=25;
-    rYZ=20;
+    rAZ=10/100;
+    rBA=25/100;
+    rBY=25/100;
+    rYZ=20/100;
     tYZ=0; % rad
-    rCB=25;
-    rXZ=97;
-    tXZ=pi/3; % rad
-    rDX=40;
+    rCB=25/100;
+    rXZ=97/100;
+    tXZ=pi/2; % rad
+    rDX=40/100;
     rED=rDX;
     rFE=rDX;
     rCD=rDX; rDC=rCD;
@@ -36,9 +38,8 @@ tAZ=pi/3+wAZ*t+0.5*aAZ*t.^2;
 
 % solve position vectors 
 [RBAx, RBAy]=pol2cart(tBA, rBA);
-[VBAx, VBAy]=omega2vel(rBA, tBA, 0, wBA);
-[ABAx, ABAy]=alpha2acc(rBA, tBA, 0, wBA, 0, aBA);
-
+[VBAx, VBAy]=omega2vel(tBA,rBA, wBA, 0);
+[ABAx, ABAy]=alpha2acc(tBA, rBA,  wBA, 0, aBA, 0);
 
 [RAZx, RAZy]=pol2cart(tAZ, rAZ);
 [VAZx, VAZy]=omega2vel(tAZ,rAZ, wAZ,0);
@@ -46,15 +47,17 @@ tAZ=pi/3+wAZ*t+0.5*aAZ*t.^2;
 
 [RXZx, RXZy]=pol2cart(tXZ, rXZ);
 [VXZx, VXZy]=omega2vel(tXZ, rXZ, 0, 0);
-[AXZx, AXZy]=alpha2acc(tAZ, rAZ, 0, 0, 0, 0);
-
-RBZx=RBAx+RAZx;
-RBZy=RBAy+RAZy;
+[AXZx, AXZy]=alpha2acc(tXZ, rXZ, 0, 0, 0, 0);
 
 
-RCZx=2*RBAx+RAZx;
-RCZy=2*RBAy+RAZy;
+RBZx = RBAx + RAZx;
+RBZy = RBAy + RAZy;
 
+% these are simple vector additions
+RCZx = 2*RBAx + RAZx;
+RCZy = 2*RBAy + RAZy;
+
+% we can use the same equation for velocity and acceleration
 VCZx = 2*VBAx + VAZx;
 VCZy = 2*VBAy + VAZy;
 
@@ -62,15 +65,14 @@ ACZx = 2*ABAx + AAZx;
 ACZy = 2*ABAy + AAZy;
 
 
-RCXx=RCZx - RXZx;
-RCXy=RCZy - RXZy;
+RCXx = RCZx - RXZx;
+RCXy = RCZy - RXZy;
 
+VCXx = VCZx - VXZx;
+VCXy = VCZy - VXZy;
 
-VCXx=VCZx - VXZx;
-VCXy=VCZy - VXZy;
-
-ACXx=ACZx - AXZx;
-ACXy=ACZy - AXZy;
+ACXx = ACZx - AXZx;
+ACXy = ACZy - AXZy;
 
 
 [tCX, rCX]=cart2pol(RCXx, RCXy);
@@ -106,9 +108,18 @@ AEXy = 2*ADXy;
     fourbar_acceleration(rEX, rFE, rCF, rCX, aEX, wEX, tEX, aCX, wCX, tCX);
 
 [RFEx, RFEy]=pol2cart(tFE, rFE);
+[VFEx, VFEy]=omega2vel(tFE, rFE, wFE, 0);
+[AFEx, AFEy]=alpha2acc(tFE, rFE, wFE, 0, aFE, 0);
 
-RGZx=2*RFEx+REXx + RXZx;
-RGZy=2*RFEy+REXy + RXZy;
+RGZx = 2*RFEx + REXx + RXZx;
+RGZy = 2*RFEy + REXy + RXZy;
+
+VGZx = 2*VFEx + VEXx + VXZx;
+VGZy = 2*VFEy + VEXy + VXZy;
+
+AGZx = 2*AFEx + AEXx + AXZx;
+AGZy = 2*AFEy + AEXy + AXZy;
+
 
 REZx = REXx - RDXx + RDZx;
 REZy = REXy - RDXy + RDZy;
@@ -134,8 +145,7 @@ for k=1:numel(t)
     plot(RYZx, RYZy, 'bx');
 
     plot([RAZx(k), 0], [RAZy(k), 0], 'r-o')
-
-
+    
     plot([RBZx(k),RAZx(k)], [RBZy(k), RAZy(k)], 'r-o');
     plot([RBZx(k),RYZx(k)], [RBZy(k), RYZy(k)], 'r-o');
     plot([RCZx(k),RAZx(k)], [RCZy(k), RAZy(k)], 'r-o');
@@ -150,5 +160,40 @@ for k=1:numel(t)
     grid on;
 end
 
+figure(2); gcf; clf;
+subplot(2,2,1);
+plot(RGZx, RGZy, 'k');
+grid on;
+set(gca, 'fontsize', 16);
+
+subplot(2,2,2);
+plot(t, RGZx, 'k:');
+hold on;
+plot(t, RGZy, 'k--');
+legend('x', 'y');
+grid on;
+set(gca, 'fontsize', 16);
+xlabel('time(s)');
+ylabel('position of G (m)');
+
+subplot(2,2,3);
+plot(t, VGZx, 'k:');
+hold on;
+plot(t, VGZy, 'k--');
+legend('x', 'y');
+grid on;
+set(gca, 'fontsize', 16);
+xlabel('time(s)');
+ylabel('velocity of G (m/s)');
+
+subplot(2,2,4);
+plot(t, AGZx, 'k:');
+hold on;
+plot(t, AGZy, 'k--');
+legend('x', 'y');
+grid on;
+set(gca, 'fontsize', 16);
+xlabel('time(s)');
+ylabel('acceeleration of G (m/s^2)');
 
 % axis([-50 100, 0 150]);

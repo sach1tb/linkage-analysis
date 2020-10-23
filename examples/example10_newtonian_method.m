@@ -1,5 +1,7 @@
+function example10_newtonian_method(a,b,c,d,alpha2,omega2,theta2, rho, ...
+                        F1, F2, F3, F4, rF1, rF2, rF3, rF4, T1, T2, T3, T4)
 addpath ../core
-clear variables
+
 % newtonian method: gives pin  joint forces and input torque for a required
 % angular acceleration and velocity of a fourbar linkage
 %
@@ -8,41 +10,41 @@ clear variables
 % to use this script you must change the link properties, joint positions, 
 % location of where the force is applied in link 3's frame and acceleration
 % of each link's center of gravity, all locations marked with '**'
-% 
 
-addpath ../core
+if nargin < 1
+    rho=23.4791;
+    
+    % link properties **
+    % a (crank)
+    a=0.86; % length m
+    m2=rho*a; % mass kg
+    I2=m2*a^2/12; % moment of inertia
+    rCG2=a/2; % location of center of mass on the link length
+    alpha2=10; % angular acceleration
+    omega2=-10; % angular velocity
+    theta2=-36*pi/180; % angular position
+    
+    % b (coupler)
+    b=1.85;
+    m3=rho*b; 
+    I3=m3*b^2/12; 
+    rCG3=b/2;
+    rF3=1.33;
+    F3=[500; 0]; % external force applied on link 3 in the x-direction (N)
+    
+    % c (rocker) 
+    c=0.86;
+    m4=rho*c; 
+    I4=m4*c^2/12; 
+    rCG4=c/2;
+    T4=0; % external torque on link 4
 
-% link properties **
-% a (crank)
-a=0.86; % length m
-m2=20.192; % mass kg
-I2=1.249; % moment of inertia
-rCG2=a/2; % location of center of mass on the link length
-alpha2=10; % angular acceleration
-omega2=-10; % angular velocity
-theta2=-36*pi/180; % angular position
-
-% b (coupler)
-b=1.85;
-m3=43.436; 
-I3=12.398; 
-rCG3=b/2;
-rPA=1.33;
-F3=[500; 0]; % external force applied on link 3 in the x-direction (N)
-
-
-% c (rocker) 
-c=0.86;
-m4=20.192; 
-I4=1.249; 
-rCG4=c/2;
-T4=0; % external torque on link 4
-
-% d (ground)
-d=2.22; 
-alpha1=0;
-omega1=0;
-theta1=0;
+    % d (ground)
+    d=2.22; 
+    alpha1=0;
+    omega1=0;
+    theta1=0;
+end
 
 
 % pva analysis (use as is)
@@ -72,7 +74,7 @@ R14=[   rCG4*cos(theta4o+pi);
         rCG4*sin(theta4o+pi)];
 
 % location of where the force is acting in link 3's frame **
-RF3=[(rPA-rCG3)*cos(theta3o); (rPA-rCG3)*sin(theta3o)];
+RF3=[(rF3-rCG3)*cos(theta3o); (rF3-rCG3)*sin(theta3o)];
 
 % accelerations of each link at its center of gravity ** (change only if
 % needed)
