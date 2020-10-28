@@ -4,6 +4,17 @@ function example15_pantograph_with_hoeken(rAZ, rBA, rBY, rYZ, tYZ, rCB, ...
 % SB, NIU, 2019
 %
 % *all units SI*
+% link lengths always in meters and start with lower case r, order of
+% uppercase doesn't matter: rAZ=rZA
+% vectors start with upper case R, order matters: RAZ != RZA
+% angles are always in radians and begin with letter t
+% angular rates begin with letter w
+% angular accelerations begin with letter a
+% linear velocities begin with letter V
+% linear accelerations begin with letter A
+%
+% refer to examples in doc folder for kinematic diagram
+
 
 addpath ../core
 
@@ -48,10 +59,6 @@ tAZ=pi/3+wAZ*t+0.5*aAZ*t.^2;
 [RXZx, RXZy]=pol2cart(tXZ, rXZ);
 [VXZx, VXZy]=omega2vel(tXZ, rXZ, 0, 0);
 [AXZx, AXZy]=alpha2acc(tXZ, rXZ, 0, 0, 0, 0);
-
-
-RBZx = RBAx + RAZx;
-RBZy = RBAy + RAZy;
 
 % these are simple vector additions
 RCZx = 2*RBAx + RAZx;
@@ -124,6 +131,10 @@ AGZy = 2*AFEy + AEXy + AXZy;
 REZx = REXx - RDXx + RDZx;
 REZy = REXy - RDXy + RDZy;
 
+
+RBZx = RBAx + RAZx;
+RBZy = RBAy + RAZy;
+
 RFZx = RFEx + REZx;
 RFZy = RFEy + REZy;
 
@@ -133,7 +144,7 @@ RYZy = rYZ*sin(tYZ)*ones(1, numel(t));
 RXZx = RXZx*ones(1, numel(t));
 RXZy = RXZy*ones(1, numel(t));
 
-
+% animate
 for k=1:numel(t)
     figure(1); gcf; clf;
     plot(0,0, 'bs');
@@ -146,30 +157,48 @@ for k=1:numel(t)
 
     plot([RAZx(k), 0], [RAZy(k), 0], 'r-o')
     
-    plot([RBZx(k),RAZx(k)], [RBZy(k), RAZy(k)], 'r-o');
-    plot([RBZx(k),RYZx(k)], [RBZy(k), RYZy(k)], 'r-o');
-    plot([RCZx(k),RAZx(k)], [RCZy(k), RAZy(k)], 'r-o');
-    plot([RCZx(k),RDZx(k)], [RCZy(k), RDZy(k)], 'r-o');
-    plot([RFZx(k),REZx(k)], [RFZy(k), REZy(k)], 'r-o');
-    plot([RCZx(k),RFZx(k)], [RCZy(k), RFZy(k)], 'r-o');
-    plot([RGZx(k),RFZx(k)], [RGZy(k), RFZy(k)], 'r-o');
-    plot([RDZx(k),RXZx(k)], [RDZy(k), RXZy(k)], 'r-o');
-    plot([REZx(k),RDZx(k)], [REZy(k), RDZy(k)], 'r-o');
+    plot([RBZx(k),RAZx(k)], [RBZy(k), RAZy(k)], 'b-o'); 
+    plot([RBZx(k),RYZx(k)], [RBZy(k), RYZy(k)], 'b-o');
+    plot([RCZx(k),RAZx(k)], [RCZy(k), RAZy(k)], 'b-o');
+    plot([RCZx(k),RDZx(k)], [RCZy(k), RDZy(k)], 'b-o');
+    plot([RFZx(k),REZx(k)], [RFZy(k), REZy(k)], 'b-o');
+    plot([RCZx(k),RFZx(k)], [RCZy(k), RFZy(k)], 'b-o');
+    plot([RGZx(k),RFZx(k)], [RGZy(k), RFZy(k)], 'b-o');
+    plot([RDZx(k),RXZx(k)], [RDZy(k), RXZy(k)], 'b-o');
+    plot([REZx(k),RDZx(k)], [REZy(k), RDZy(k)], 'b-o');
     plot(RCZx, RCZy, 'k-.');
     plot(RGZx, RGZy, 'k');
+    
+    text(.01, .01, 'Z', 'fontsize', 16);
+    text(RAZx(k)*1.1, RAZy(k)*1.1, 'A', 'fontsize', 16);
+    text(RBZx(k)*1.1, RBZy(k)*1.1, 'B', 'fontsize', 16);
+    text(RCZx(k)*1.1, RCZy(k)*1.1, 'C', 'fontsize', 16);
+    text(RDZx(k)*1.1, RDZy(k)*1.1, 'D', 'fontsize', 16);
+    text(REZx(k)*1.1, REZy(k)*1.1, 'E', 'fontsize', 16);
+    text(RFZx(k)*1.1, RFZy(k)*1.1, 'F', 'fontsize', 16);
+    text(RGZx(k)*1.1, RGZy(k)*1.1, 'G', 'fontsize', 16);
+
+    text(RXZx(k)*1.1, RXZy(k)*1.1, 'X', 'fontsize', 16);
+    text(RYZx(k)*1.1, RYZy(k)*1.1, 'Y', 'fontsize', 16);
+    
+    axis image;
+    axis([-1 1 -1 1]);
+    
+    drawnow();
     grid on;
 end
 
+% plot pva data
 figure(2); gcf; clf;
 subplot(2,2,1);
-plot(RGZx, RGZy, 'k');
+plot(RGZx, RGZy, 'k', 'linewidth', 2);
 grid on;
 set(gca, 'fontsize', 16);
 
 subplot(2,2,2);
-plot(t, RGZx, 'k:');
+plot(t, RGZx, 'k:', 'linewidth', 2);
 hold on;
-plot(t, RGZy, 'k--');
+plot(t, RGZy, 'k--', 'linewidth', 2);
 legend('x', 'y');
 grid on;
 set(gca, 'fontsize', 16);
@@ -177,9 +206,9 @@ xlabel('time(s)');
 ylabel('position of G (m)');
 
 subplot(2,2,3);
-plot(t, VGZx, 'k:');
+plot(t, VGZx, 'k:', 'linewidth', 2);
 hold on;
-plot(t, VGZy, 'k--');
+plot(t, VGZy, 'k--', 'linewidth', 2);
 legend('x', 'y');
 grid on;
 set(gca, 'fontsize', 16);
@@ -187,9 +216,9 @@ xlabel('time(s)');
 ylabel('velocity of G (m/s)');
 
 subplot(2,2,4);
-plot(t, AGZx, 'k:');
+plot(t, AGZx, 'k:', 'linewidth', 2);
 hold on;
-plot(t, AGZy, 'k--');
+plot(t, AGZy, 'k--', 'linewidth', 2);
 legend('x', 'y');
 grid on;
 set(gca, 'fontsize', 16);
