@@ -17,7 +17,7 @@ if nargin < 1
     rZA=15/100; rAB=50/100; rBY=41.5/100; rZY=sqrt(38^2+7.8^2)/100;
     rAC=61.9/100; rYC=39.3/100; rYD=40.1/100; rBD=55.8/100; 
     rCE=36.7/100; rDE=39.4/100; rEF=65.7/100; rCF=49/100;
-    wAZ=2; % rad/s angular speed of crank
+    wAZ=1; % rad/s angular speed of crank
     aAZ=0; % rad/s^2 angular acceleration of crank
     % ** angle between the ground links
     tYZ=190*pi/180;
