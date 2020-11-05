@@ -2,14 +2,15 @@ function example12_jansen(rZA, wAZ, rAB, rBY, rZY, tYZ, rAC, rYC, rYD, rBD, rCE,
 
 addpath ../core
 
-% link lengths always in meters and start with lower case r, order of
-% uppercase doesn't matter: rAZ=rZA
-% vectors start with upper case R, order matters: RAZ != RZA
-% angles are always in radians and begin with letter t
-% angular rates begin with letter w
-% angular accelerations begin with letter a
-% linear velocities begin with letter V
-% linear accelerations begin with letter A
+% * all units SI (m, kg, N, s, radians)
+% * link lengths start with lower case r, order of successive letters 
+%   doesn't matter: rAZ=rZA
+% * vectors start with upper case R, order matters: RAZ != RZA
+% * angles begin with letter t, order matters: tYZ != tZY
+% * angular rates begin with letter w
+% * angular accelerations begin with letter a
+% * linear velocities begin with letter V
+% * linear accelerations begin with letter A
 % 
 % refer to examples in doc folder for kinematic diagram
 

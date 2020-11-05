@@ -2,15 +2,16 @@ function example08_pantograph(rAZ, rAB, rDC, rYZ, wAZ, aAZ)
 
 addpath ../core
 % sylvester pantograph
-% *all units SI*
-% link lengths always in meters and start with lower case r, order of
-% uppercase doesn't matter: rAZ=rZA
-% vectors start with upper case R, order matters: RAZ != RZA
-% angles are always in radians and begin with letter t
-% angular rates begin with letter w
-% angular accelerations begin with letter a
-% linear velocities begin with letter V
-% linear accelerations begin with letter A
+% 
+% * all units SI (m, kg, N, s, radians)
+% * link lengths start with lower case r, order of successive letters 
+%   doesn't matter: rAZ=rZA
+% * vectors start with upper case R, order matters: RAZ != RZA
+% * angles begin with letter t
+% * angular rates begin with letter w
+% * angular accelerations begin with letter a
+% * linear velocities begin with letter V
+% * linear accelerations begin with letter A
 %
 % refer to examples in doc folder for kinematic diagram
 %
@@ -108,15 +109,6 @@ RCZy = 2*RBAy + RAZy;
 [ADCx, ADCy]=alpha2acc(tDC, rDC, wDC, 0, aDC, 0);
 RDZx = RDCx + RCZx;
 RDZy = RDCy + RCZy;
-
-
-[RDYx, RDYy]=pol2cart(tDY, rYD);
-[VDYx, VDYy]=omega2vel(tDY, rYD, wDY, 0);
-[ADYx, ADYy]=alpha2acc(tDY, rYD, wDY, 0, aDY, 0);
-
-RDZx = RDYx + RYZx;
-RDZy = RDYy + RYZy;
-
 
 REZx = 2*RDCx + RCBx + RBAx + RAZx;
 REZy = 2*RDCy + RCBy + RBAy + RAZy;

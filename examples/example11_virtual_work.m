@@ -1,5 +1,5 @@
-function example11b(a,b,c,d,AP,BAP,w2,a2, lnk_rho, lnk_width, lnk_thickness, ...
-        rPA, fPAx, fPAy, cfg,simTime)
+function example11_virtual_work(a,b,c,d,theta2, omega2,alpha2, lnk_rho, lnk_width, lnk_thickness, ...
+        rPA, FPAx, FPAy)
 
 addpath ../core
 
@@ -13,30 +13,44 @@ addpath ../core
 % of each link's center of gravity, all locations marked with '**'
 % 
 
-% material density
-lnk_rho=1190; % kg/m^3
-lnk_thickness=0.0047625; % m
-lnk_width=0.013; % m
+if nargin < 1
+    a=0.86;
+    b=1.85;
+    c=0.86;
+    d=2.22;
+
+    % material density per length kg/m
+    rho=23.4791;
+%     lnk_rho=1190; % kg/m^3
+%     lnk_thickness=0.0047625; % m
+%     lnk_width=0.013; % m
+    
+    rPA=1.33;
+    
+    alpha2=10; % angular acceleration
+    omega2=-10; % angular velocity
+    theta2=-36*pi/180; % angular position
+
+    FPAx=500;
+    FPAy=0;
+
+end
 
 % link properties **
 % a (crank)
-m2=a*lnk_width*lnk_thickness*lnk_rho; % mass kg
-I2=m2*(lnk_width^2+a^2)/12; % moment of inertia
+m2=a*rho; % mass kg
+I2=m2*(a^2)/12; % moment of inertia
 rCG2=a/2; % location of center of mass on the link length
-alpha2=10; % angular acceleration
-omega2=-10; % angular velocity
-theta2=-36*pi/180; % angular position
 
 % b (coupler)
-m3=b*lnk_width*lnk_thickness*lnk_rho; 
-I3=m2*(lnk_width^2+b^2)/12; 
+m3=b*rho; 
+I3=m3*(b^2)/12; 
 rCG3=b/2;
-rPA=1.33; ** this is AP?
-F3=[500; 0]; % external force applied on link 3 in the x-direction (N)
+F3=[FPAx; FPAy]; % external force applied on link 3 in the x-direction (N)
 
 % c (rocker) 
-m4=c*lnk_width*lnk_thickness*lnk_rho; 
-I4=m2*(lnk_width^2+c^2)/12; 
+m4=c*rho; 
+I4=m4*(c^2)/12; 
 rCG4=c/2;
 rO4G4=c/2;
 T4=0; % external torque on link 4
