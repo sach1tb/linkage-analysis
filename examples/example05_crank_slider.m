@@ -1,5 +1,7 @@
 function example05_crank_slider(a,b,c,w2,cfg, simTime)
 
+addpath ../core
+
 % see crankslider.png for the meaning of each parameter
 % parameters >> these can be changed
 % link lengths
