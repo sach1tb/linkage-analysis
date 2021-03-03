@@ -9,6 +9,7 @@ addpath ../core
 if nargin< 1
     a=1.36; b=10; c=10; d=15;
     APlen=20; BAP=0; % BAP
+
     w2=-2; % rad/s
     cfg=1;
     simTime=2*pi/w2; % multiply by the number of cycles you want to see 

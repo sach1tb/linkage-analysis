@@ -12,39 +12,49 @@ addpath ../core
 % of each link's center of gravity, all locations marked with '**'
 
 if nargin < 1
+    a=0.86; b=1.85; c=0.86; d=2.22; 
+
+    % material density per length kg/m
     rho=23.4791;
+%     lnk_rho=1190; % kg/m^3
+%     lnk_thickness=0.0047625; % m
+%     lnk_width=0.013; % m
     
-    % link properties **
-    % a (crank)
-    a=0.86; % length m
-    m2=rho*a; % mass kg
-    I2=m2*a^2/12; % moment of inertia
-    rCG2=a/2; % location of center of mass on the link length
+    rPA=1.33;
+    
     alpha2=10; % angular acceleration
     omega2=-10; % angular velocity
     theta2=-36*pi/180; % angular position
-    
-    % b (coupler)
-    b=1.85;
-    m3=rho*b; 
-    I3=m3*b^2/12; 
-    rCG3=b/2;
-    rF3=1.33;
-    F3=[500; 0]; % external force applied on link 3 in the x-direction (N)
-    
-    % c (rocker) 
-    c=0.86;
-    m4=rho*c; 
-    I4=m4*c^2/12; 
-    rCG4=c/2;
-    T4=0; % external torque on link 4
 
-    % d (ground)
-    d=2.22; 
-    alpha1=0;
-    omega1=0;
-    theta1=0;
+    FPAx=500;
+    FPAy=0;
+    
 end
+
+
+% link properties **
+% a (crank)
+m2=a*rho; % mass kg
+I2=m2*(a^2)/12; % moment of inertia
+rCG2=a/2; % location of center of mass on the link length
+
+% b (coupler)
+m3=b*rho; 
+I3=m3*(b^2)/12; 
+rCG3=b/2;
+F3=[FPAx; FPAy]; % external force applied on link 3 in the x-direction (N)
+
+% c (rocker) 
+m4=c*rho; 
+I4=m4*(c^2)/12; 
+rCG4=c/2;
+rO4G4=c/2;
+T4=0; % external torque on link 4
+
+% d (ground)
+alpha1=0;
+omega1=0;
+theta1=0;
 
 
 % pva analysis (use as is)
@@ -74,7 +84,7 @@ R14=[   rCG4*cos(theta4o+pi);
         rCG4*sin(theta4o+pi)];
 
 % location of where the force is acting in link 3's frame **
-RF3=[(rF3-rCG3)*cos(theta3o); (rF3-rCG3)*sin(theta3o)];
+RF3=[(rPA-rCG3)*cos(theta3o); (rPA-rCG3)*sin(theta3o)];
 
 % accelerations of each link at its center of gravity ** (change only if
 % needed)

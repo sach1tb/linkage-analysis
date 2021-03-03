@@ -1,18 +1,20 @@
 function example15_pantograph_with_hoeken(rAZ, rBA, rBY, rYZ, tYZ, rCB, ...
-            rXZ, tXZ, rDX, rED, rFE, rCD, rFC, rGF, wAZ, aAZ, t)
+            rXZ, tXZ, rDX, rED, rFE, rCD, rFC, rGF, wAZ, aAZ, FG, lnk_rho, ...
+            lnk_thickness, lnk_width, t)
 %
 % SB, NIU, 2019
 %
-% *all units SI*
-% link lengths always in meters and start with lower case r, order of
-% uppercase doesn't matter: rAZ=rZA
-% vectors start with upper case R, order matters: RAZ != RZA
-% angles are always in radians and begin with letter t
-% angular rates begin with letter w
-% angular accelerations begin with letter a
-% linear velocities begin with letter V
-% linear accelerations begin with letter A
-%
+% * all units SI (m, kg, N, s, radians)
+% * link lengths start with lower case r, order of successive letters 
+%   doesn't matter: rAZ=rZA
+% * vectors start with upper case R, order matters: RAZ != RZA
+% * angles begin with letter t
+% * angular rates begin with letter w
+% * angular accelerations begin with letter a
+% * linear velocities begin with letter V
+% * linear velocities of center of mass of a link begin with Vc
+% * linear accelerations begin with letter A
+% * linear accelerations of center of mass of a link begin with Ac
 % refer to examples in doc folder for kinematic diagram
 
 
@@ -37,6 +39,10 @@ if nargin < 1
     wAZ=1; % rad/s
     aAZ=0;
     t=10; % seconds
+    FG=[0; 1]; % N, can also be a time profile to apply load only when needed
+    lnk_rho=1190; % kg/m^3
+    lnk_thickness=0.0047625; % m
+    lnk_width=0.013; % m
 end
  
 t=linspace(0,t, 100);
@@ -48,9 +54,14 @@ tAZ=pi/3+wAZ*t+0.5*aAZ*t.^2;
     fourbar_acceleration(rAZ, rBA, rBY, rYZ, aAZ, wAZ, tAZ, 0, 0, tYZ);
 
 % solve position vectors 
+% we need these to implement the next set of equations
 [RBAx, RBAy]=pol2cart(tBA, rBA);
 [VBAx, VBAy]=omega2vel(tBA,rBA, wBA, 0);
 [ABAx, ABAy]=alpha2acc(tBA, rBA,  wBA, 0, aBA, 0);
+
+[RBYx, RBYy]=pol2cart(tBY, rBY);
+[VBYx, VBYy]=omega2vel(tBY,rBY, wBY, 0);
+[ABYx, ABYy]=alpha2acc(tBY, rBY,  wBY, 0, aBY, 0);
 
 [RAZx, RAZy]=pol2cart(tAZ, rAZ);
 [VAZx, VAZy]=omega2vel(tAZ,rAZ, wAZ,0);
@@ -81,7 +92,8 @@ VCXy = VCZy - VXZy;
 ACXx = ACZx - AXZx;
 ACXy = ACZy - AXZy;
 
-
+% convert back to angular values so we can plug in for links that change
+% size and orientation at the same time
 [tCX, rCX]=cart2pol(RCXx, RCXy);
 [dotCX, wCX]=vel2omega(rCX, tCX, VCXx, VCXy);
 [ddotCX, aCX]= acc2alpha(rCX, tCX, dotCX, wCX, ACXx, ACXy);
@@ -134,6 +146,7 @@ REZy = REXy - RDXy + RDZy;
 
 RBZx = RBAx + RAZx;
 RBZy = RBAy + RAZy;
+
 
 RFZx = RFEx + REZx;
 RFZy = RFEy + REZy;
@@ -225,4 +238,110 @@ set(gca, 'fontsize', 16);
 xlabel('time(s)');
 ylabel('acceeleration of G (m/s^2)');
 
-% axis([-50 100, 0 150]);
+
+% torque analysis using virtual work
+% mass of each link
+dpl=lnk_rho*lnk_thickness*lnk_width; % density per length
+
+mAZ=dpl*rAZ;
+mBA=dpl*rBA;
+mBY=dpl*rBY;
+mCA=dpl*rCB*2;
+mEX=dpl*rDX*2;
+mED=dpl*rED;
+mFE=dpl*rFE;
+mCD=dpl*rCD;
+mFC=dpl*rFC;
+mGE=dpl*rGF*2;
+
+% moment of inertia of each link, assuming very littl
+iAZ=mAZ*(rAZ^2+lnk_width^2)/12; 
+iBA=mBA*(rBA^2+lnk_width^2)/12;
+iBY=mBY*(rBY^2+lnk_width^2)/12;
+iCA=mCA*((2*rCB)^2+lnk_width^2)/12;
+iEX=mEX*((2*rDX)^2+lnk_width^2)/12;
+iED=mED*(rED^2+lnk_width^2)/12;
+iFE=mFE*(rFE^2+lnk_width^2)/12;
+iCD=mCD*(rCD^2+lnk_width^2)/12;
+iFC=mFC*(rFC^2+lnk_width^2)/12;
+iGE=mGE*((2*rGF)^2+lnk_width^2)/12;
+
+% velocities and accelerations of center of gravity of each link
+[VcAZx, VcAZy]=omega2vel(tAZ, rAZ/2, wAZ, 0);
+[AcAZx, AcAZy]=alpha2acc(tAZ,rAZ/2, wAZ, 0, aAZ, 0);
+
+VcCAx = 2*VBAx/2 + VAZx;
+VcCAy = 2*VBAy/2 + VAZy;
+
+AcCAx = 2*ABAx/2 + AAZx;
+AcCAy = 2*ABAy/2 + AAZy;
+
+[VcBYx, VcBYy]=omega2vel(tBY, rBY/2, wBY, 0);
+[AcBYx, AcBYy]=alpha2acc(tBY, rBY/2,  wBY, 0, aBY, 0);
+
+[VCFx, VCFy]=omega2vel(tCF, rCF, wCF, 0);
+[ACFx, ACFy]=alpha2acc(tCF, rCF, wCF, 0, aCF, 0);
+
+VcFCx = -VCFx/2 + 2*VBAx + VAZx;
+VcFCy = -VCFy/2 + 2*VBAy + VAZy;
+
+AcFCx = -ACFx/2 + 2*ABAx + AAZx;
+AcFCy = -ACFy/2 + 2*ABAy + AAZy;
+
+[VDCx, VDCy]=omega2vel(tDC, rDC, wDC, 0);
+[ADCx, ADCy]=alpha2acc(tDC, rDC, wDC, 0, aDC, 0);
+
+VcDCx = VDCx/2 + 2*VBAx + VAZx;
+VcDCy = VDCy/2 + 2*VBAy + VAZy;
+
+AcDCx = ADCx/2 + 2*ABAx + AAZx;
+AcDCy = ADCy/2 + 2*ABAy + AAZy;
+
+
+VcEXx = 2*VDXx/2;
+VcEXy = 2*VDXy/2;
+
+AcEXx = 2*ADXx/2;
+AcEXy = 2*ADXy/2;
+
+VcGEx = 2*VFEx/2 + VEXx + VXZx;
+VcGEy = 2*VFEy/2 + VEXy + VXZy;
+
+AcGEx = 2*AFEx/2 + AEXx + AXZx;
+AcGEy = 2*AFEy/2 + AEXy + AXZy;
+
+
+% terms of the final equation without the signs (10.28 in book)
+
+% external forces
+if size(FG,2)==1 % if FG is not a profile e.g. foot hitting the ground
+   FG=FG*ones(1,numel(t));
+end
+t1=dot(FG, [VGZx; VGZy]); 
+% inertial forces
+t3= mAZ*dot([AcAZx; AcAZy], [VcAZx; VcAZy]) + ...
+    mCA*dot([AcCAx; AcCAy], [VcCAx; VcCAy]) + ...
+    mBY*dot([AcBYx; AcBYy], [VcBYx; VcBYy]) + ...
+    mFC*dot([AcFCx; AcFCy], [VcFCx; VcFCy]) + ...
+    mCD*dot([AcDCx; AcDCy], [VcDCx; VcDCy]) + ...
+    mEX*dot([AcEXx; AcEXy], [VcEXx; VcEXy]) + ...
+    mGE*dot([AcGEx; AcGEy], [VcGEx; VcGEy]);
+
+% inertial torques
+t4= iAZ*aAZ.*wAZ + ...
+    iCA*aBA.*wBA + ...
+    iBY*aBY.*wBY + ...
+    iFC*aCF.*wCF + ...
+    iCD*aDC.*wDC + ...
+    iEX*aEX.*wEX + ...
+    iGE*aFE.*wFE;
+
+
+T_motor=1/wAZ*(t3+t4-t1);
+
+figure(3); gcf; clf;
+plot(t, T_motor, 'k', 'linewidth', 2);
+grid on;
+set(gca, 'fontsize', 16);
+xlabel('time(s)');
+ylabel('required motor torque (Nm)');
