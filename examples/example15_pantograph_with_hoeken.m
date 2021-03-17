@@ -63,6 +63,7 @@ tAZ=pi/3+wAZ*t+0.5*aAZ*t.^2;
 [VBYx, VBYy]=omega2vel(tBY,rBY, wBY, 0);
 [ABYx, ABYy]=alpha2acc(tBY, rBY,  wBY, 0, aBY, 0);
 
+% ground links
 [RAZx, RAZy]=pol2cart(tAZ, rAZ);
 [VAZx, VAZy]=omega2vel(tAZ,rAZ, wAZ,0);
 [AAZx, AAZy]=alpha2acc(tAZ,rAZ, wAZ, 0, aAZ, 0);

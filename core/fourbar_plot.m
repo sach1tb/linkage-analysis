@@ -21,43 +21,47 @@ copos=a*exp(1i*t2)+APlen*exp(1i*(t3+BAP));
 % draw it
 
 % ground
-plot(real(opos), imag(opos), 'ko', 'markersize', 12, 'linewidth', 2);
+plot(real(opos), imag(opos), 'bs');
 hold on;
-plot(real(opos), imag(opos), 'ks', 'markersize', 16, 'linewidth', 2);
+plot(real(opos), imag(opos), 'bx');
 
 % crank, link 2
-quiver(real(opos), imag(opos), ...
-    real(apos-opos), imag(apos-opos), 0, 'color', clrs(1,:), ...
-    'linewidth', 2);
-plot(real(apos), imag(apos), 'ko', 'markersize', 9, 'linewidth', 2);
+% quiver(real(opos), imag(opos), ...
+%     real(apos-opos), imag(apos-opos), 0, 'color', clrs(1,:), ...
+%     'linewidth', 2);
+plot([real(apos), real(opos)], [imag(apos), imag(opos)], 'r-o');
 
-% floaring link
-quiver(real(apos), imag(apos), ...
-    real(bpos-apos), imag(bpos-apos), 0, 'color', clrs(2,:), ...
-    'linewidth', 2);
-plot(real(bpos), imag(bpos), 'ko', 'markersize', 9, 'linewidth', 2);
+% floating link
+% quiver(real(apos), imag(apos), ...
+%     real(bpos-apos), imag(bpos-apos), 0, 'color', clrs(2,:), ...
+%     'linewidth', 2);
+plot([real(bpos), real(apos)], [imag(bpos), imag(apos)], 'b-o');
 
 % coupler
 % quiver(real(apos), imag(apos), ...
 %     real(copos-apos), imag(copos-apos), 0, '.', 'color', clrs(3,:), ...
 %     'linewidth', 2);
 
-plot([real(apos), real(copos)]', [imag(apos), imag(copos)]', 'k-.');
+plot([real(apos), real(cpos)]', [imag(apos), imag(cpos)]', 'b-o');
+plot([real(apos), real(copos)]', [imag(apos), imag(copos)]', 'b-');
 
 
 % rocker/output
-quiver(real(opos), imag(opos), ...
-    real(dpos-opos), imag(dpos-opos), 0, 'k', ...
-    'linewidth', 2);
+% quiver(real(opos), imag(opos), ...
+%     real(dpos-opos), imag(dpos-opos), 0, 'k', ...
+%     'linewidth', 2);
+plot([real(cpos), real(dpos)]', [imag(cpos), imag(dpos)]', 'b-o');
 
 % ground
-plot(real(dpos), imag(dpos), 'ko', 'markersize', 12, 'linewidth', 2);
-plot(real(dpos), imag(dpos), 'ks', 'markersize', 16, 'linewidth', 2);
-quiver(real(dpos), imag(dpos), ...
-    real(cpos-dpos), imag(cpos-dpos), 0, 'color', clrs(3,:), ...
-    'linewidth', 2);
+plot(real(dpos), imag(dpos), 'bs');
+plot(real(dpos), imag(dpos), 'bx');
+% quiver(real(dpos), imag(dpos), ...
+%     real(cpos-dpos), imag(cpos-dpos), 0, 'color', clrs(3,:), ...
+%     'linewidth', 2);
 grid on;
 axis image;
-axis([-d, d+c, -a-b-APlen, a+b+APlen]);
 
-box on;
+axis off
+axis([-1 1 -1 1]*20);
+
+% box on;

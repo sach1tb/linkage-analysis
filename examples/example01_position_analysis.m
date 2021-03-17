@@ -7,12 +7,17 @@ function example01_position_analysis(a,b,c,d,APlen,BAP,w2,cfg, simTime)
 addpath ../core
 
 if nargin< 1
+    % test linkage
     a=1.36; b=10; c=10; d=15;
     APlen=20; BAP=0; % BAP
 
+    % hoeken's
+%     a=2; b=5; c=5; d=4;
+%     APlen=10; BAP=0; % BAP
+    
     w2=-2; % rad/s
     cfg=1;
-    simTime=2*pi/w2; % multiply by the number of cycles you want to see 
+    simTime=2*pi/abs(w2); % multiply by the number of cycles you want to see 
 end
 % *** Processing ***
 % linspace linearly spaces the time into 100 equal sections
@@ -32,28 +37,30 @@ figure(1); gcf; clf;
 
 if cfg==1
     for iter=1:numel(t)
-        subplot(1,3,1); cla;
+        figure(1); gcf; clf;
         fourbar_plot(a,b,c,d,BAP,APlen, t2(iter),t3o(iter),...
             t4o(iter),t1, eye(3));
         drawnow;
+        grid on;
     end
 else
     for iter=1:numel(t)
-        subplot(1,3,1); cla;
+        figure(1); gcf; clf;
         fourbar_plot(a,b,c,d,BAP,APlen, t2(iter),t3c(iter),...
             t4c(iter),t1, eye(3));
         drawnow;
+        grid on;
     end
 end
 plot(px,py, 'k-.', 'linewidth', 2);
 set(gca, 'fontsize', 24, 'fontname', 'times');
-subplot(1,3,2);
-plot(px,py, 'k-.', 'linewidth', 2);
-set(gca, 'fontsize', 24, 'fontname', 'times');
+
+figure(2); gcf; clf;
+plot(t, px, 'k:', 'linewidth', 2);
+hold on;
+plot(t, py, 'k--', 'linewidth', 2);
+legend('x', 'y');
 grid on;
-axis image; % this makes sure you see the right aspect ratio
-subplot(1,3,3);
-plot(t, px, 'linewidth',2); hold on; plot(t, py, 'linewidth',2);
-set(gca, 'fontsize', 24, 'fontname', 'times');
-xlabel('time(s)'); 
-grid on; legend('x', 'y');
+set(gca, 'fontsize', 16);
+xlabel('time(s)');
+ylabel('position of P (m)');
