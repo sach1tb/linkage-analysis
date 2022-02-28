@@ -8,11 +8,11 @@ addpath ../core
 
 if nargin< 1
     % test linkage
-    a=1.8;
-    b=2.7;
-    c=2.2;
-    d=2.3;
-    APlen=10; BAP=0; % BAP
+    a=1.3;
+    b=1.9;
+    c=2.1;
+    d=2.5;
+    APlen=4; BAP=0; % BAP
 
     % hoeken's
 %     a=2; b=5; c=5; d=4;
