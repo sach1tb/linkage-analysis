@@ -1,4 +1,4 @@
-function example08_pantograph(rAZ, rAB, rDC, rYZ, wAZ, aAZ)
+function example08_pantograph(rAZ, rAB, rDC, rYZ, wAZ, aAZ, simTime)
 
 addpath ../core
 % sylvester pantograph
@@ -20,19 +20,21 @@ addpath ../core
 if nargin < 1
     rAZ=10/100; rAB=40/100;  rDC=40/100; 
     rYZ=54/100;
-    tYZ=pi/4; 
+
     
-    rBC=rAB; rDE=rDC;
-    rBY=rDC; rYD=rBC; 
 
     % angular speed of the crank or input link
     wAZ=2; % rad/s
     aAZ=0;
     
-    t=10; % seconds
+    simTime=10; % seconds
 end
 
-t=linspace(0,t, 100);
+tYZ=pi/4; 
+rBC=rAB; rDE=rDC;
+rBY=rDC; rYD=rBC;
+
+t=linspace(0,simTime, 100);
 
 tAZ=pi/3+wAZ*t+0.5*aAZ*t.^2; 
 
@@ -125,10 +127,11 @@ RYZy = RYZy*ones(1, numel(t));
 % animate
 for k=1:numel(t)
     figure(1); gcf; clf;
-    plot(0,0, 'bs');
+    plot(0,0, 'b^', 'markersize', 12);
+       hold on;
     plot(0,0, 'bx');
-    hold on;
-    plot(RYZx, RYZy, 'bs');
+ 
+    plot(RYZx, RYZy, 'b^', 'markersize', 12);
     plot(RYZx, RYZy, 'bx');
 
     plot([RAZx(k), 0], [RAZy(k), 0], 'r-o')
@@ -150,7 +153,7 @@ for k=1:numel(t)
     text(RYZx(k)*1.1, RYZy(k)*1.1, 'Y', 'fontsize', 16);
     
     axis image;
-    axis([-1 1 -1 1]);
+    axis([-rAZ*2 rAZ+3*rAB -rAZ rAZ+2*rAB]);
     
     drawnow();
     grid on;

@@ -1,4 +1,6 @@
-function example12_jansen(rZA, wAZ, rAB, rBY, rZY, tYZ, rAC, rYC, rYD, rBD, rCE, rDE, rEF, rCF)
+function example12_jansen(rZA, wAZ, rAB, rBY, rZY, tYZ, rAC, rYC, rYD, ...
+                        rBD, rCE, rDE, rEF, rCF, FF, lnk_rho, ...
+                        lnk_thickness, lnk_width, simTime)
 
 addpath ../core
 
@@ -19,15 +21,25 @@ if nargin < 1
     rAC=61.9/100; rYC=39.3/100; rYD=40.1/100; rBD=55.8/100; 
     rCE=36.7/100; rDE=39.4/100; rEF=65.7/100; rCF=49/100;
     wAZ=1; % rad/s angular speed of crank
-    aAZ=0; % rad/s^2 angular acceleration of crank
-    % ** angle between the ground links
-    tYZ=190*pi/180;
-    t=10; % seconds
+    tYZ=190;
+    lnk_rho=1190; % kg/m^3
+    lnk_thickness=0.0047625; % m
+    lnk_width=0.013; % m
+    
+    FF=[0; 1]; % N, can also be a time profile to apply load only when needed
+    
+    simTime=10; % seconds
+    
+    
 end
 
+% ** angle between the ground links
+tYZ=tYZ*pi/180;
+
+aAZ=0; % rad/s^2 angular acceleration of crank
 
 % linspace linearly spaces the time into 100 equal sections
-t=linspace(0,t, 100);
+t=linspace(0,simTime, simTime*10);
 tAZ=wAZ*t; % t_2
 
 tYZ=tYZ*ones(1,numel(t));
@@ -63,7 +75,6 @@ tYZ=tYZ*ones(1,numel(t));
 [RAZx, RAZy] = pol2cart(tAZ, rZA);
 [VAZx, VAZy] = omega2vel(tAZ, rZA, wAZ, 0);
 [AAZx, AAZy] = alpha2acc(tAZ, rZA, wAZ, 0, aAZ, 0);
-
 
 [RBAx, RBAy] = pol2cart(tBA, rAB);
 [VBAx, VBAy] = omega2vel(tBA, rAB, wBA, 0);
@@ -198,3 +209,112 @@ grid on;
 set(gca, 'fontsize', 16);
 xlabel('time(s)');
 ylabel('acceeleration of F (m/s^2)');
+
+
+% torque analysis using virtual work
+% mass of each link
+dpl=lnk_rho*lnk_thickness*lnk_width; % density per length
+
+
+mZA=dpl*rZA;
+mAB=dpl*rAB;
+mBY=dpl*rBY;
+mYC=dpl*rYC;
+mBD=dpl*rBD;
+mCE=dpl*rCE;
+mDE=dpl*rDE;
+mEF=dpl*rEF;
+mCF=dpl*rCF;
+
+% moment of inertia of each link
+iZA=mZA*(rZA^2+lnk_width^2)/12; 
+iAB=mAB*(rAB^2+lnk_width^2)/12;
+iBY=mBY*(rBY^2+lnk_width^2)/12;
+iYC=mYC*(rYC^2+lnk_width^2)/12;
+iBD=mBD*(rBD^2+lnk_width^2)/12;
+iCE=mCE*(rCE^2+lnk_width^2)/12;
+iDE=mDE*(rDE^2+lnk_width^2)/12;
+iEF=mEF*(rEF^2+lnk_width^2)/12;
+iCF=mCF*(rCF^2+lnk_width^2)/12;
+
+% velocities and accelerations of center of gravity of each link
+rAZ=rZA;
+[VcAZx, VcAZy]=omega2vel(tAZ, rAZ/2, wAZ, 0);
+[AcAZx, AcAZy]=alpha2acc(tAZ,rAZ/2, wAZ, 0, aAZ, 0);
+
+VcBAx = VBAx/2 + VAZx;
+VcBAy = VBAy/2 + VAZy;
+
+AcBAx = ABAx/2 + AAZx;
+AcBAy = ABAy/2 + AAZy;
+
+[VcBYx, VcBYy]=omega2vel(tBY, rBY/2, wBY, 0);
+[AcBYx, AcBYy]=alpha2acc(tBY, rBY/2,  wBY, 0, aBY, 0);
+
+VcDBx = VDBx/2+ VBAx + VAZx;
+VcDBy = VDBy/2+ VBAy + VAZy;
+
+AcDBx = ADBx/2+ ABAx + AAZx;
+AcDBy = ADBy/2+ ABAy + AAZy;
+
+[VcDYx, VcDYy] = omega2vel(tDY, rDY/2, wDY, 0);
+[AcDYx, AcDYy] = alpha2acc(tDY, rDY/2, wDY, 0, aDY, 0);
+
+
+
+
+tCF=tFC+pi;
+wCF=wFC;
+aCF=aFC;
+[VCFx, VCFy]=omega2vel(tCF, rCF, wCF, 0);
+[ACFx, ACFy]=alpha2acc(tCF, rCF, wCF, 0, aCF, 0);
+
+VcFCx = -VCFx/2 + 2*VBAx + VAZx;
+VcFCy = -VCFy/2 + 2*VBAy + VAZy;
+
+AcFCx = -ACFx/2 + 2*ABAx + AAZx;
+AcFCy = -ACFy/2 + 2*ABAy + AAZy;
+
+
+% terms of the final equation without the signs (10.28 in book)
+
+% external forces
+if size(FF,2)==1 % if FG is not a profile e.g. foot hitting the ground
+   FF=FF*ones(1,numel(t));
+end
+t1=dot(FF, [VFZx; VFZy]); 
+% inertial forces
+t3= mZA*dot([AcAZx; AcAZy], [VcAZx; VcAZy]) + ...
+    mAB*dot([AcBAx; AcBAy], [VcBAx; VcBAy]) + ...
+    mBD*dot([AcDBx; AcDBy], [VcDBx; VcDBy]) + ...
+    mDY*dot([AcDYx; AcDYy], [VcDYx; VcDYy]) + ...    
+    mDE*dot([AcDEx; AcDEy], [VcDEx; VcDEy]) + ...
+    mEF*dot([AcEFx; AcEFy], [VcEFx; VcEFy]) + ...
+    mCE*dot([AcCEx; AcCEy], [VcCEx; VcCEy]) + ...
+    mYC*dot([AcYCx; AcYCy], [VcYCx; VcYCy]) + ...
+    mCA*dot([AcCAx; AcCAy], [VcCAx; VcCAy]) + ...
+    mBY*dot([AcBYx; AcBYy], [VcBYx; VcBYy]) + ...
+    mFC*dot([AcFCx; AcFCy], [VcFCx; VcFCy]);
+
+% inertial torques
+t4= iZA*aAZ.*wAZ + ...
+    iAB*aBA.*wBA + ...
+    iBD*aBD.*wBD + ...
+    iDY*aDY.*wDY + ...
+    iDE*aDE.*wDE + ...
+    iEF*aEF.*wEF + ...
+    iCE*aCE.*wCE + ...
+    iYC*aYC.*wYC + ...
+    iCA*aCA.*wCA + ...
+    iBY*aBY.*wBY + ...
+    iFC*aCF.*wCF;
+
+
+T_motor=1/wAZ*(t3+t4-t1);
+
+figure(3); gcf; clf;
+plot(t, T_motor, 'k', 'linewidth', 2);
+grid on;
+set(gca, 'fontsize', 16);
+xlabel('time(s)');
+ylabel('required motor torque (Nm)');

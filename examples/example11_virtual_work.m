@@ -14,25 +14,25 @@ addpath ../core
 % 
 
 if nargin < 1
-    a=0.86;
-    b=1.85;
-    c=0.86;
-    d=2.22;
+    a=1.8*2;
+    b=2.7*2;
+    c=2.2*2;
+    d=2.3*2;
 
     % material density per length kg/m
-    rho=23.4791;
+    rho=7.74;
 %     lnk_rho=1190; % kg/m^3
 %     lnk_thickness=0.0047625; % m
 %     lnk_width=0.013; % m
     
-    rPA=1.33;
+    rPA=2.7;
     
-    alpha2=10; % angular acceleration
-    omega2=-10; % angular velocity
-    theta2=-36*pi/180; % angular position
+    alpha2=0; % angular acceleration
+    omega2=pi; % angular velocity
+    theta2=-15*pi/180; % angular position
 
-    FPAx=500;
-    FPAy=0;
+    FPAx=10*cosd(20);
+    FPAy=10*sind(20);
 
 end
 

@@ -13,6 +13,9 @@ addpath ../core
 
 if nargin < 1
     a=0.86; b=1.85; c=0.86; d=2.22; 
+    
+    BAP=1; % radians
+    APlen=b;
 
     % material density per length kg/m
     rho=23.4791;
@@ -20,15 +23,17 @@ if nargin < 1
 %     lnk_thickness=0.0047625; % m
 %     lnk_width=0.013; % m
     
-    rPA=1.33;
+    rF2=0.0;
+    rF3=1.33;
+    rF4=0.0;
     
     alpha2=10; % angular acceleration
     omega2=-10; % angular velocity
     theta2=-36*pi/180; % angular position
 
-    FPAx=500;
-    FPAy=0;
-    
+    F2=[0; 0];
+    F3=[500; 0]; % external force applied on link 3 in the x-direction (N)
+    F4=[0; 0];
 end
 
 
@@ -42,7 +47,7 @@ rCG2=a/2; % location of center of mass on the link length
 m3=b*rho; 
 I3=m3*(b^2)/12; 
 rCG3=b/2;
-F3=[FPAx; FPAy]; % external force applied on link 3 in the x-direction (N)
+
 
 % c (rocker) 
 m4=c*rho; 
@@ -61,7 +66,10 @@ theta1=0;
 [alpha3o, alpha3c, alpha4o, alpha4c, omega3o, omega3c, omega4o, omega4c, ...
     theta3o, theta3c, theta4o, theta4c]=fourbar_acceleration(a, b, c, d, alpha2, ...
                                                 omega2, theta2, alpha1, omega1, theta1);
-
+figure(1); gcf; clf;
+fourbar_plot(a,b,c,d,BAP,APlen, theta2,theta3o,theta4o,theta1, eye(3))
+                                            
+                                            
 % joint positions **                                            
 % RXY is the position of joint between links X and Y in a 
 % local frame located at link Y's frame 
@@ -84,7 +92,10 @@ R14=[   rCG4*cos(theta4o+pi);
         rCG4*sin(theta4o+pi)];
 
 % location of where the force is acting in link 3's frame **
-RF3=[(rPA-rCG3)*cos(theta3o); (rPA-rCG3)*sin(theta3o)];
+RF2=[(rF2)*cos(theta2); (rF2)*sin(theta2)];
+RF3=[(rF3-rCG3)*cos(theta3o); (rF3-rCG3)*sin(theta3o)];
+RF4=[(rF4)*cos(theta4o)+d; (rF4)*sin(theta4o)];
+
 
 % accelerations of each link at its center of gravity ** (change only if
 % needed)
@@ -102,15 +113,15 @@ aG4y = rCG4*alpha4o.*cos(theta4o) -rCG4*omega4o.^2.*sin(theta4o);
 
 % solve the newtonian dynamics equations using matrix inversion
 % (use as is)
-B=[ m2*aG2x;
-    m2*aG2y;
-    I2*alpha2;
+B=[ m2*aG2x - F2(1,:);
+    m2*aG2y - F2(2,:);
+    I2*alpha2 - RF2(1)*F2(2,:) + RF2(2)*F2(1,:);
     m3*aG3x - F3(1,:);
     m3*aG3y - F3(2,:);
     I3*alpha3o - RF3(1)*F3(2,:) + RF3(2)*F3(1,:);
-    m4*aG4x;
-    m4*aG4y;
-    I4*alpha4o - T4];
+    m4*aG4x - F4(1,:);
+    m4*aG4y - F4(2,:);
+    I4*alpha4o - T4 - RF4(1)*F4(2,:) + RF4(2)*F4(1,:)];
 
 A=[ 1 0 1 0 0 0 0 0 0
     0 1 0 1 0 0 0 0 0

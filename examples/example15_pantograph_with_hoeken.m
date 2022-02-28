@@ -162,8 +162,8 @@ RXZy = RXZy*ones(1, numel(t));
 for k=1:numel(t)
     figure(1); gcf; clf;
     plot(0,0, 'bs');
-    plot(0,0, 'bx');
     hold on;
+    plot(0,0, 'bx');
     plot(RXZx, RXZy, 'bs');
     plot(RXZx, RXZy, 'bx');
     plot(RYZx, RYZy, 'bs');

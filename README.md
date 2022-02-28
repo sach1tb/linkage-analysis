@@ -9,5 +9,4 @@ Example scripts to get started:
 2) Solves a fourbar position analysis using numerical method fsolve
 3) Jansen's linkage position analysis using numerical methods
 
-TODO:
-- make analysis scripts consistent for fourbar and walker legs  
+
