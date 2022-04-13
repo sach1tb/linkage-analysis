@@ -12,7 +12,7 @@ if nargin< 1
     b=1.9;
     c=2.1;
     d=2.5;
-    APlen=4; BAP=0; % BAP
+    APlen=4; BAP=pi/4; % BAP
 
     % hoeken's
 %     a=2; b=5; c=5; d=4;
@@ -20,7 +20,7 @@ if nargin< 1
     
     w2=2; % rad/s
     cfg=1;
-    simTime=10*pi/abs(w2); % multiply by the number of cycles you want to see 
+    simTime=0; % multiply by the number of cycles you want to see 
 end
 % *** Processing ***
 % linspace linearly spaces the time into 100 equal sections
@@ -30,7 +30,7 @@ else
     t=linspace(0,simTime, 10);
 end
 theta1=0; % ground orientation
-theta2=w2*t; % theta_2
+theta2=pi/3*ones(1,numel(t)); % theta_2
 [theta3o, theta3c, theta4o, theta4c]=fourbar_position(a, b, c, d, theta2, theta1);
 
 

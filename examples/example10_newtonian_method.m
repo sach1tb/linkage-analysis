@@ -12,28 +12,28 @@ addpath ../core
 % of each link's center of gravity, all locations marked with '**'
 
 if nargin < 1
+    % link lengths
     a=0.86; b=1.85; c=0.86; d=2.22; 
     
-    BAP=1; % radians
-    APlen=b;
+    % angle
+    BAP=0; % radians
+    APlen=b; % coupler length
 
-    % material density per length kg/m
-    rho=23.4791;
-%     lnk_rho=1190; % kg/m^3
-%     lnk_thickness=0.0047625; % m
-%     lnk_width=0.013; % m
+    rho=23.4791;             % material density per length kg/m
+                             % if this is not available put m2, I2, m3, ...
+                             % etc. directly below
     
-    rF2=0.0;
-    rF3=1.33;
-    rF4=0.0;
+    rF2=0.0;            % external force location on link 2
+    rF3=1.33;           % external force location on link 3
+    rF4=0.0;            % external force location on link 4
     
-    alpha2=10; % angular acceleration
-    omega2=-10; % angular velocity
-    theta2=-36*pi/180; % angular position
+    alpha2=10;          % angular acceleration
+    omega2=-10;         % angular velocity
+    theta2=-36*pi/180;  % angular position
 
-    F2=[0; 0];
-    F3=[500; 0]; % external force applied on link 3 in the x-direction (N)
-    F4=[0; 0];
+    F2=[0; 0];          % external force on link 2
+    F3=[500; 0];        % external force on link 3
+    F4=[0; 0];          % ....
 end
 
 
@@ -47,7 +47,6 @@ rCG2=a/2; % location of center of mass on the link length
 m3=b*rho; 
 I3=m3*(b^2)/12; 
 rCG3=b/2;
-
 
 % c (rocker) 
 m4=c*rho; 

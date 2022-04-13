@@ -6,7 +6,7 @@ addpath ../core
 % parameters >> these can be changed
 % link lengths
 if nargin < 1
-    a=40; b=120; c=20; 
+    a=11; b=23; c=-4.5; 
     w2=2; % rad/s
     cfg=1;
     simTime=2*pi/w2*2; % multiply by the number of cycles you want to see 
