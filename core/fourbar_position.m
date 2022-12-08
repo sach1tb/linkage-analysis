@@ -1,29 +1,29 @@
-function [t3o, t3c, t4o, t4c, A, B, C]=fourbar_position(a, b, c, d, t2, t1)
-% fourbar_position performs position analysis of a fourbar linkage
+function [thetaCouplerOpen, thetaCouplerCross, thetaOutputOpen, thetaOutputCross, A, B, C]=fourbar_position(crankLength, couplerLength, outputLength, groundLength, thetaCrank, thetaGround)
+% fourbar_position performs position analysis of crankLength fourbar linkage
 % according to the convention in fourbar.png
 % 
 % Syntax
 %
-%   [t3o, ~, t4o]=fourbar_position(a, b, c, d, t2)
-%   [t3o, ~, t4o]=fourbar_position(a, b, c, d, t2, t1)
-%   [~, t3c, ~, t4c]=fourbar_position(a, b, c, d, t2)
-%   [~, t3c, ~, t4c]=fourbar_position(a, b, c, d, t2, t1)
-%   [t3o, t3c, t4o, t4c, A, B, C]=fourbar_position(a, b, c, d, t2)
-%   [t3o, t3c, t4o, t4c, A, B, C]=fourbar_position(a, b, c, d, t2, t1)
+%   [thetaCouplerOpen, ~, thetaOutputOpen]=fourbar_position(crankLength, couplerLength, outputLength, groundLength, thetaCrank)
+%   [thetaCouplerOpen, ~, thetaOutputOpen]=fourbar_position(crankLength, couplerLength, outputLength, groundLength, thetaCrank, thetaGround)
+%   [~, thetaCouplerCross, ~, thetaOutputCross]=fourbar_position(crankLength, couplerLength, outputLength, groundLength, thetaCrank)
+%   [~, thetaCouplerCross, ~, thetaOutputCross]=fourbar_position(crankLength, couplerLength, outputLength, groundLength, thetaCrank, thetaGround)
+%   [thetaCouplerOpen, thetaCouplerCross, thetaOutputOpen, thetaOutputCross, A, B, C]=fourbar_position(crankLength, couplerLength, outputLength, groundLength, thetaCrank)
+%   [thetaCouplerOpen, thetaCouplerCross, thetaOutputOpen, thetaOutputCross, A, B, C]=fourbar_position(crankLength, couplerLength, outputLength, groundLength, thetaCrank, thetaGround)
 %
 % Description
-%   [t3o, ~, t4o]=fourbar_position(a, b, c, d, t2) takes as input the link
-%   lengths a, b, c, d, and the angle(s) t2 for the input link in radians 
+%   [thetaCouplerOpen, ~, thetaOutputOpen]=fourbar_position(crankLength, couplerLength, outputLength, groundLength, thetaCrank) takes as input the link
+%   lengths crankLength, couplerLength, outputLength, groundLength, and the angle(s) thetaCrank for the input link in radians 
 %   and returns the angles theta_3 and theta_4 in radians in the open 
 %   configuration
 %
-%   [t3o, ~, t4o]=fourbar_position(a, b, c, d, t2, t1) allows a tilted
-%   ground with angle t1 in radians
+%   [thetaCouplerOpen, ~, thetaOutputOpen]=fourbar_position(crankLength, couplerLength, outputLength, groundLength, thetaCrank, thetaGround) allows crankLength tilted
+%   ground with angle thetaGround in radians
 %
-%   [~, t3c, ~, t4c]=fourbar_position(a, b, c, d, t2) for cross
+%   [~, thetaCouplerCross, ~, thetaOutputCross]=fourbar_position(crankLength, couplerLength, outputLength, groundLength, thetaCrank) for cross
 %   configuration
 %
-%   [t3o, t3c, t4o, t4c, A, B, C]=fourbar_position(a, b, c, d, t2) to see
+%   [thetaCouplerOpen, thetaCouplerCross, thetaOutputOpen, thetaOutputCross, A, B, C]=fourbar_position(crankLength, couplerLength, outputLength, groundLength, thetaCrank) to see
 %   all values including those of constants A, B, and C
 %
 %
@@ -35,25 +35,25 @@ function [t3o, t3c, t4o, t4c, A, B, C]=fourbar_position(a, b, c, d, t2, t1)
 % Known bugs: 
 % 1) does not work for pi - 2pi range for parallelogram linkages (3/2019)
 
-if nargin<6, t1=0; end
+if nargin<6, thetaGround=0; end
 
-K1=2*d.*c.*cos(t1)-2*a.*c.*cos(t2);
-K2=2*d.*c.*sin(t1)-2*a.*c.*sin(t2);
-K3=2*a.*d.*sin(t1).*sin(t2) + 2*a.*d.*cos(t1).*cos(t2);
-K4=b.^2-a.^2-c.^2-d.^2;
+K1=2*groundLength.*outputLength.*cos(thetaGround)-2*crankLength.*outputLength.*cos(thetaCrank);
+K2=2*groundLength.*outputLength.*sin(thetaGround)-2*crankLength.*outputLength.*sin(thetaCrank);
+K3=2*crankLength.*groundLength.*sin(thetaGround).*sin(thetaCrank) + 2*crankLength.*groundLength.*cos(thetaGround).*cos(thetaCrank);
+K4=couplerLength.^2-crankLength.^2-outputLength.^2-groundLength.^2;
 
 A=K4+K1+K3;
 B=-2*K2;
 C=K4-K1+K3;
 
 if A==0, A=eps; end
-t4c=2*atan((-B-sqrt(B.^2-4*A.*C))./(2*A));
-t4o=2*atan((-B+sqrt(B.^2-4*A.*C))./(2*A));
+thetaOutputCross=2*atan((-B-sqrt(B.^2-4*A.*C))./(2*A));
+thetaOutputOpen=2*atan((-B+sqrt(B.^2-4*A.*C))./(2*A));
 
-K5=2*a.*b.*cos(t2)-2*b.*d.*cos(t1);
-K6=2*a.*b.*sin(t2)-2*b.*d.*sin(t1);
-K7=2*a.*d.*sin(t1).*sin(t2) + 2*a.*d.*cos(t1).*cos(t2);
-K8=(c.^2-d.^2-a.^2-b.^2);
+K5=2*crankLength.*couplerLength.*cos(thetaCrank)-2*couplerLength.*groundLength.*cos(thetaGround);
+K6=2*crankLength.*couplerLength.*sin(thetaCrank)-2*couplerLength.*groundLength.*sin(thetaGround);
+K7=2*crankLength.*groundLength.*sin(thetaGround).*sin(thetaCrank) + 2*crankLength.*groundLength.*cos(thetaGround).*cos(thetaCrank);
+K8=(outputLength.^2-groundLength.^2-crankLength.^2-couplerLength.^2);
 
 
 D=K8+K7+K5;
@@ -61,5 +61,5 @@ E=-2*K6;
 F=K8-K5+K7;
 
 if D==0, D=eps; end
-t3c=2*atan((-E+sqrt(E.^2-4*D.*F))./(2*D));
-t3o=2*atan((-E-sqrt(E.^2-4*D.*F))./(2*D));
+thetaCouplerCross=2*atan((-E+sqrt(E.^2-4*D.*F))./(2*D));
+thetaCouplerOpen=2*atan((-E-sqrt(E.^2-4*D.*F))./(2*D));

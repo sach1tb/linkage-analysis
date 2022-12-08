@@ -69,7 +69,7 @@ plot(real(dpos), imag(dpos), 'b^', 'markersize', 28, 'linewidth', 2);
 grid on;
 axis image;
 
-axis off
-% axis([-1 1 -1 1]*30);
+% axis off
+% axis([-1 1 -1 1]*10);
 
 % box on;

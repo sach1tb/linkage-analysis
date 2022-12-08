@@ -34,6 +34,9 @@ if nargin < 1
     F2=[0; 0];          % external force on link 2
     F3=[500; 0];        % external force on link 3
     F4=[0; 0];          % ....
+    
+    T3=0; % external torque on link 3
+    T4=0; % external torque on link 4
 end
 
 
@@ -53,7 +56,7 @@ m4=c*rho;
 I4=m4*(c^2)/12; 
 rCG4=c/2;
 rO4G4=c/2;
-T4=0; % external torque on link 4
+
 
 % d (ground)
 alpha1=0;
@@ -65,8 +68,21 @@ theta1=0;
 [alpha3o, alpha3c, alpha4o, alpha4c, omega3o, omega3c, omega4o, omega4c, ...
     theta3o, theta3c, theta4o, theta4c]=fourbar_acceleration(a, b, c, d, alpha2, ...
                                                 omega2, theta2, alpha1, omega1, theta1);
+
+% plot it to verify if the configuration is open or cross
+% leave as is if it is open, but set the flag after fourbar_plot to 1 if
+% the configuration is cross and rerun
+if 0 % <-- set this value to 1 if the plot doesn't look right
+    % reset all configurations to cross
+    theta3o=theta3c;
+    theta4o=theta4c;
+    alpha3o=alpha3c;
+    alpha4o=alpha4c;
+    omega3o=omega3c;
+    omega4o=omega4c;
+end
 figure(1); gcf; clf;
-fourbar_plot(a,b,c,d,BAP,APlen, theta2,theta3o,theta4o,theta1, eye(3))
+fourbar_plot(a,b,c,d,BAP,APlen, theta2,theta3o,theta4o,theta1, eye(3));
                                             
                                             
 % joint positions **                                            
@@ -90,10 +106,10 @@ R34=[   rCG4*cos(theta4o);
 R14=[   rCG4*cos(theta4o+pi);
         rCG4*sin(theta4o+pi)];
 
-% location of where the force is acting in link 3's frame **
-RF2=[(rF2)*cos(theta2); (rF2)*sin(theta2)];
+% location of where the force is acting in link's CG frame **
+RF2=[(rF2-rCG2)*cos(theta2); (rF2-rCG2)*sin(theta2)];
 RF3=[(rF3-rCG3)*cos(theta3o); (rF3-rCG3)*sin(theta3o)];
-RF4=[(rF4)*cos(theta4o)+d; (rF4)*sin(theta4o)];
+RF4=[(rF4-rCG4)*cos(theta4o); (rF4-rCG4)*sin(theta4o)];
 
 
 % accelerations of each link at its center of gravity ** (change only if
@@ -117,7 +133,7 @@ B=[ m2*aG2x - F2(1,:);
     I2*alpha2 - RF2(1)*F2(2,:) + RF2(2)*F2(1,:);
     m3*aG3x - F3(1,:);
     m3*aG3y - F3(2,:);
-    I3*alpha3o - RF3(1)*F3(2,:) + RF3(2)*F3(1,:);
+    I3*alpha3o - T3 - RF3(1)*F3(2,:) + RF3(2)*F3(1,:);
     m4*aG4x - F4(1,:);
     m4*aG4y - F4(2,:);
     I4*alpha4o - T4 - RF4(1)*F4(2,:) + RF4(2)*F4(1,:)];
@@ -133,10 +149,11 @@ A=[ 1 0 1 0 0 0 0 0 0
     0 0 0 0 R34(2) -R34(1) -R14(2) R14(1) 0];
 
 x=A\B;
+% fprintf('%.1f, ', x)
+% fprintf('\n');
 
 results=array2table(x', 'VariableNames', {'F12x', 'F12y', 'F32x', 'F32y', ...
-                        'F43x', 'F43y', 'F14x', 'F14y', 'T12'});
-
+                        'F43x', 'F43y', 'F14x', 'F14y', 'T2'});
 results
     
 
