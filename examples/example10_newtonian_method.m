@@ -1,5 +1,5 @@
 function example10_newtonian_method(a,b,c,d,alpha2,omega2,theta2, rho, ...
-                        F1, F2, F3, F4, rF1, rF2, rF3, rF4, T1, T2, T3, T4)
+                        F2, F3, F4, rF2, rF3, rF4, T3, T4)
 addpath ../core
 
 % newtonian method: gives pin  joint forces and input torque for a required
@@ -43,7 +43,7 @@ end
 % link properties **
 % a (crank)
 m2=a*rho; % mass kg
-I2=m2*(a^2)/12; % moment of inertia
+I2=m2*(a^2)/12; % moment of inertia (replace with actual value if given)
 rCG2=a/2; % location of center of mass on the link length
 
 % b (coupler)
@@ -55,7 +55,6 @@ rCG3=b/2;
 m4=c*rho; 
 I4=m4*(c^2)/12; 
 rCG4=c/2;
-rO4G4=c/2;
 
 
 % d (ground)
