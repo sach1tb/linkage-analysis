@@ -1,101 +1,86 @@
-function example01_position_analysis(a,b,c,d,APlen,BAP,w2,cfg, simTime)
-% see fourbar.png for the meaning of each parameter
-% parameters >> these can be changed
-% link lengths
-
+function example01_position_analysis(a,b,c,d,APlen,BAP,w2,cfg, animate, simTime)
+% see fourbar.png for the meaning of each variable
+% this script performs position analysis for a time series
+% to do position analysis for a single position directly use
+% fourbar_position and fourbar_plot as follows (make sure you understand
+% what the function argument mean)
+%
+% [theta3o, theta3c, theta4o, theta4c]=fourbar_position(20,40,30,40,pi/3,0);
+% fourbar_plot(20,40,30,40,pi/3,20, pi/3,theta3o,theta4o,0,...
+%                 [-50, 50], [-20, 40], eye(3));
+% 
 % the line below adds the core scripts to the current working directory
 addpath ../core
 
 if nargin< 1
-    % test linkage
-    a=1.3;
-    b=1.9;
-    c=2.1;
-    d=2.5;
-    APlen=4; BAP=pi/4; % BAP
+    % link lengths
+    a=1.3; b=1.9; c=2.1; d=2.5; 
 
+    % coupler shape
+    BAP=pi/4; % radians
+    APlen=4; % coupler length
+   
     % hoeken's
-%     a=2; b=5; c=5; d=4;
-%     APlen=10; BAP=0; % BAP
+%   a=2; b=5; c=5; d=4;
+%   BAP=0; % radians
+%   APlen=10; 
     
     w2=2; % rad/s
-    cfg=1;
-    simTime=0; % multiply by the number of cycles you want to see 
+    cfg=1; % 1 is open and 0 is crossed
+    animate=1;
+    simTime=10; % seconds
 end
-% *** Processing ***
+
 % linspace linearly spaces the time into 100 equal sections
-if simTime > 1
-    t=linspace(0,simTime, 100);
-else
-    t=linspace(0,simTime, 10);
-end
+t=linspace(0,simTime, 100);
+
 theta1=0; % ground orientation
-theta2=pi/3*ones(1,numel(t)); % theta_2
+theta2=w2*t; % theta_2
+% calculate theta_3, theta_4, etc.
 [theta3o, theta3c, theta4o, theta4c]=fourbar_position(a, b, c, d, theta2, theta1);
 
 
+% this function converts polar coordinates to cartesian
+% e.g. x = a*cos(theta2)
+[RAZx, RAZy]=pol2cart(theta2, a);
 
-[RAO2x, RAO2y]=pol2cart(theta2, a);
-if cfg==1
-    theta3=theta3o;
-    theta4=theta4o;
-else
-    theta3=theta3c;
-    theta4=theta4c;
+% if the configuration is not 1 (open) then simply change variable names so
+% we plot the other one
+if cfg~=1
+    theta3o=theta3c;
+    theta4o=theta4c;
 end
 
-[RBAx, RBAy]=pol2cart(theta3, b);
-[RPAx, RPAy]=pol2cart(theta3 + BAP, APlen);
+[RPAx, RPAy]=pol2cart(theta3o + BAP, APlen);
 
-RBO2x=RBAx+RAO2x;
-RBO2y=RBAy+RAO2y;
-
-RO4O2x = d*ones(1, numel(t));
-RO4O2y = 0*ones(1, numel(t));
-
-RPO2x=RPAx+RAO2x;
-RPO2y=RPAy+RAO2y;
-
-figure(1); gcf; clf;
+RPZx=RPAx+RAZx;
+RPZy=RPAy+RAZy;
 
 % animate
-for k=1:numel(t)
-    figure(1); gcf; clf;
-    plot(0,0, 'bs');
-    hold on;
-    plot(0,0, 'bx');
-    plot(RO4O2x, RO4O2y, 'bs');
-    plot(RO4O2x, RO4O2y, 'bx');
-
-    plot([RAO2x(k), 0], [RAO2y(k), 0], 'r-o')
-    
-    plot([RBO2x(k),RAO2x(k)], [RBO2y(k), RAO2y(k)], 'b-o'); 
-    plot([RPO2x(k),RAO2x(k)], [RPO2y(k), RAO2y(k)], 'b-o'); 
-    plot([RBO2x(k),RPO2x(k)], [RBO2y(k), RPO2y(k)], 'b-o'); 
-    plot([RBO2x(k),RO4O2x(k)], [RBO2y(k), RO4O2y(k)], 'b-o'); 
-    
-    text(.01, .01, 'O2', 'fontsize', 16);
-    text(RAO2x(k)*1.1, RAO2y(k)*1.1, 'A', 'fontsize', 16);
-    text(RBO2x(k)*1.1, RBO2y(k)*1.1, 'B', 'fontsize', 16);
-
-    text(RO4O2x(k)*1.1, RO4O2y(k)*1.1, 'O4', 'fontsize', 16);
-    
-    axis image;
-    axis([-(d+a) (d+c+APlen) -(a+b+APlen) (a+b+APlen)]);
-    
-    drawnow();
-    grid on;
+if animate
+    for k=1:numel(t)
+        figure(1); gcf; clf;
+        % fourbar plot plots the fourbar
+        % the x and y limits of the plot may need changing depending on which
+        % configuration you are using
+        fourbar_plot(a,b,c,d,BAP,APlen, theta2(k),theta3o(k),theta4o(k),theta1,...
+                [-(a+b), (a+b)], [-(a+APlen), (a+APlen)], eye(3));
+    end
+else
+    fourbar_plot(a,b,c,d,BAP,APlen, theta2(numel(t)),theta3o(numel(t)),theta4o(numel(t)),theta1,...
+            [-(a+b), (a+b)], [-(a+APlen), (a+APlen)], eye(3));
 end
 
-% plot pva data
-plot(RPO2x, RPO2y, 'k', 'linewidth', 2);
+% plot position trace
+plot(RPZx, RPZy, 'k', 'linewidth', 2);
 grid on;
 set(gca, 'fontsize', 16);
 
+% x-y plots
 figure(2); gcf; clf;
-plot(t, RPO2x, 'k:', 'linewidth', 2);
+plot(t, RPZx, 'k:', 'linewidth', 2);
 hold on;
-plot(t, RPO2y, 'k--', 'linewidth', 2);
+plot(t, RPZy, 'k--', 'linewidth', 2);
 legend('x', 'y');
 grid on;
 set(gca, 'fontsize', 16);

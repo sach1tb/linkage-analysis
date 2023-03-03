@@ -77,8 +77,8 @@ switch linktype
             'material density', 1190, 'kg/m^3';
             'link width', 0.013, 'm';
             'link thickness', 0.00475, 'm';
-            'FPAx', 500, 'N';
-            'FPAy', 0, 'N'};
+            'F3x', 500, 'N';
+            'F3y', 0, 'N'};
     ht.Data=data;
     ht.ColumnName=ColumnName;    
     ht.ColumnEditable = [false, true, false];
@@ -243,11 +243,10 @@ switch linktype
     lw=ht.Data{11,2};
     lt=ht.Data{12,2};
     lnk_rho=mrho*lw*lt;
-    FPAx=ht.Data{13,2};
-    FPAy=ht.Data{14,2};
+    F3=[ht.Data{13,2}, ht.Data{14,2}]';
     theta2=0;
-    example13_hoekens(a,b,c,d,APlen, BAP,theta2, omega2,alpha2, lnk_rho,...
-             FPAx, FPAy,simTime);   
+    example13_pvat_analysis(a,b,c,d,APlen, BAP,theta2, omega2,alpha2, lnk_rho,...
+             F2, F3, F4, rF2, rF3, rF4, T3, T4,simTime);   
   case 3 % crank slider
     a=ht.Data{1,2};
     b=ht.Data{2,2};

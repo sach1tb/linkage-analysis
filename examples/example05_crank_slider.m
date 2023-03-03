@@ -44,7 +44,7 @@ subplot(1,2,2);
 % plot the time series of distance
 % linspace linearly spaces the time into 100 equal sections
 
-[t3c, t3o, dc, do]=cs_position(crankLength, couplerLength, offset, t2, t1);
+[t3c, t3o, dc, do]=cs_position(crankLength, couplerLength, offset, t2);
 if configuration
    plot(t,do, 'k', 'linewidth', 2);
 else

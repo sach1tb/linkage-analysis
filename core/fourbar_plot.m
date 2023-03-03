@@ -1,4 +1,5 @@
-function [t1,t2, t3, t4]=fourbar_plot(a,b,c,d,BAP,APlen, t2,t3,t4,t1, clrs)
+function [t1,t2, t3, t4]=fourbar_plot(a,b,c,d,BAP,APlen,...
+                                        t2,t3,t4,t1,xlim, ylim, clrs)
 
 % BAP and APlen is the angle it makes with the floating
 % link and the distance of the coupler link from the joint between
@@ -14,14 +15,14 @@ opos=0*exp(1i*t1);
 apos=a*exp(1i*t2);
 bpos=a*exp(1i*t2)+b*exp(1i*t3);
 dpos=d*exp(1i*t1);
-cpos=d*exp(1i*t1)+c*exp(1i*t4);
+% cpos=d*exp(1i*t1)+c*exp(1i*t4);
 
 ppos=a*exp(1i*t2)+APlen*exp(1i*(t3+BAP));
 
 % draw it
 
 % ground
-plot(real(opos), imag(opos), 'b^', 'markersize', 28, 'linewidth', 2);
+plot(real(opos), imag(opos), 'k^', 'markersize', 28, 'linewidth', 2);
 hold on;
 
 % crank, link 2
@@ -43,12 +44,16 @@ plot([real(bpos), real(apos)], [imag(bpos), imag(apos)], 'g-o', ...
 %     real(ppos-apos), imag(ppos-apos), 0, '.', 'color', clrs(3,:), ...
 %     'linewidth', 2);
 
-plot([real(apos),  real(cpos)]', [imag(apos), imag(cpos)]', 'g-o', ...
-                                'markersize', 10, 'linewidth', 4);
+% plot([real(apos),  real(cpos)]', [imag(apos), imag(cpos)]', 'g-o', ...
+%                                 'markersize', 10, 'linewidth', 4);
 
+% plot([real(bpos), real(ppos)], [imag(bpos), imag(ppos)], 'g-o', ...
+%                                 'markersize', 10, 'linewidth', 4);
+% plot([real(apos), real(ppos)], [imag(apos), imag(ppos)], 'g-o', ...
+%                                 'markersize', 10, 'linewidth', 4);                            
 patch([real(apos),real(bpos), real(ppos)]', ...
             [imag(apos),imag(bpos), imag(ppos)]', 1,'edgecolor', 'none', ...
-            'facecolor', 'c');                          
+            'facecolor', 'g', 'facealpha', 0.75);                          
 % plot([real(apos), real(ppos)]', [imag(apos), imag(ppos)]', 'b-', ...
 %     'markersize', 10, 'linewidth', 4);
 % plot([real(bpos), real(ppos)]', [imag(bpos), imag(ppos)]', 'b-', ...
@@ -58,7 +63,7 @@ patch([real(apos),real(bpos), real(ppos)]', ...
 % quiver(real(opos), imag(opos), ...
 %     real(dpos-opos), imag(dpos-opos), 0, 'k', ...
 %     'linewidth', 2);
-plot([real(cpos), real(dpos)]', [imag(cpos), imag(dpos)]', 'b-o', ...
+plot([real(bpos), real(dpos)]', [imag(bpos), imag(dpos)]', 'b-o', ...
     'markersize', 10, 'linewidth', 4);
 
 % ground
@@ -68,6 +73,9 @@ plot(real(dpos), imag(dpos), 'b^', 'markersize', 28, 'linewidth', 2);
 %     'linewidth', 2);
 grid on;
 axis image;
+set(gca, 'xlim', xlim);
+set(gca, 'ylim', ylim);
+set(gca, 'fontsize', 16);
 
 % axis off
 % axis([-1 1 -1 1]*10);

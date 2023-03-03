@@ -1,31 +1,31 @@
-function [w31, w32, dd1, dd2, ...
-    t31, t32, d1, d2]=cs_velocity(a, b, c, w2, t2, w1, t1)
-% cs_velocity performs velocity & position analysis of a 
+function [omegaCoupler1, omegaCoupler2, sliderVelocity1, sliderVelocity2, ...
+    thetaCoupler1, thetaCoupler2, sliderDistance1, sliderDistance2]=cs_velocity(crankLength, couplerLength, offset, omegaCrank, thetaCrank, omegaGround, thetaGround)
+% cs_velocity performs velocity & position analysis of crankLength 
 % crank slider linkage according to the convention in crankslider.png
 % 
 % Syntax
 %
-%   [w31, ~, dd1, ~, t31, ~, d1]=cs_velocity(a, b, c, w2, t2)
+%   [omegaCoupler1, ~, sliderVelocity1, ~, thetaCoupler1, ~, sliderDistance1]=cs_velocity(crankLength, couplerLength, offset, omegaCrank, thetaCrank)
 %
 % Description
 %
-%   [w31, ~, dd1, ~, t31, ~, d1]=cs_velocity(a, b, c, w2, t2)
-%   takes as input the link lengths a, b, c, and the angular velocity(s)
-%   w2 in rad/s and angle(s) t2 for the input link in radians 
-%   and returns the angular velocity w31 and sliding link velocity dd1
+%   [omegaCoupler1, ~, sliderVelocity1, ~, thetaCoupler1, ~, sliderDistance1]=cs_velocity(crankLength, couplerLength, offset, omegaCrank, thetaCrank)
+%   takes as input the link lengths crankLength, couplerLength, offset, and the angular velocity(s)
+%   omegaCrank in rad/s and angle(s) thetaCrank for the input link in radians 
+%   and returns the angular velocity omegaCoupler1 and sliding link velocity sliderVelocity1
 %
 
 if nargin<6 
-    w1=0; t1=0; 
+    omegaGround=0; thetaGround=0; 
 end
 
-[t31, t32, d1, d2]=cs_position(a, b, c, t2, t1);
+[thetaCoupler1, thetaCoupler2, sliderDistance1, sliderDistance2]=cs_position(crankLength, couplerLength, offset, thetaCrank, thetaGround);
 
 
-w31=a*cos(t2)./(b*cos(t31)).*w2;
-dd1=-a*w2*sin(t2)+b*w31.*sin(t31);
+omegaCoupler1=crankLength*cos(thetaCrank)./(couplerLength*cos(thetaCoupler1)).*omegaCrank;
+sliderVelocity1=-crankLength*omegaCrank*sin(thetaCrank)+couplerLength*omegaCoupler1.*sin(thetaCoupler1);
 
-w32=a*cos(t2)./(b*cos(t32)).*w2;
-dd2=-a*w2*sin(t2)+b*w32.*sin(t32);
+omegaCoupler2=crankLength*cos(thetaCrank)./(couplerLength*cos(thetaCoupler2)).*omegaCrank;
+sliderVelocity2=-crankLength*omegaCrank*sin(thetaCrank)+couplerLength*omegaCoupler2.*sin(thetaCoupler2);
 
 

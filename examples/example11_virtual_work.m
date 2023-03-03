@@ -20,6 +20,8 @@ if nargin < 1
     % angle
     BAP=0; % radians
     APlen=b; % coupler length
+    
+    cfg=1; % 1 is open and 0 is crossed
 
     rho=23.4791;             % material density per length kg/m
                              % if this is not available put m2, I2, m3, ...
@@ -70,7 +72,7 @@ theta1=0;
 % plot it to verify if the configuration is open or cross
 % leave as is if it is open, but set the flag after fourbar_plot to 1 if
 % the configuration is cross and rerun
-if 0 % <-- set this value to 1 if the plot doesn't look right
+if cfg~=1 
     % reset all configurations to cross
     theta3o=theta3c;
     theta4o=theta4c;
@@ -80,7 +82,8 @@ if 0 % <-- set this value to 1 if the plot doesn't look right
     omega4o=omega4c;
 end                                            
 figure(1); gcf; clf;
-fourbar_plot(a,b,c,d,BAP,APlen, theta2,theta3o,theta4o,theta1, eye(3));                                            
+fourbar_plot(a,b,c,d,BAP,APlen, theta2,theta3o,theta4o,theta1, ...
+         [-(a+b), (a+b)], [-(a+APlen), (a+APlen)], eye(3));                                           
 
 % accelerations of each link at its center of gravity **
 aG2x=-rCG2*alpha2.*sin(theta2) -rCG2*omega2.^2.*cos(theta2);
@@ -117,8 +120,8 @@ vP4y = rF4*omega4o*cos(theta4o);
 % terms of the final equation without the signs (10.28 in book)
 
 % external forces
-t1=dot(F2, [vP2x,vP2y]') + dot(F3, [vP3x,vP3y]') + ...
-    dot(F4, [vP4x,vP4y]') + T3*omega3c + T4*omega4c; 
+t1=dot(F2, [vP2x;vP2y]) + dot(F3, [vP3x;vP3y]) + ...
+    dot(F4, [vP4x;vP4y]) + T3*omega3o + T4*omega4o; 
 
 % inertial forces
 t3=m2*dot([aG2x; aG2y], [vG2x; vG2y]) + ...
