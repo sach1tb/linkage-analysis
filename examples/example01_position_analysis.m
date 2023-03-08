@@ -4,7 +4,9 @@ function example01_position_analysis(a,b,c,d,APlen,BAP,w2,cfg, animate, simTime)
 % to do position analysis for a single position directly use
 % fourbar_position and fourbar_plot as follows (make sure you understand
 % what the function argument mean)
-%
+% type help fourbar_plot to see how to use the function
+% 
+% 
 % [theta3o, theta3c, theta4o, theta4c]=fourbar_position(20,40,30,40,pi/3,0);
 % fourbar_plot(20,40,30,40,pi/3,20, pi/3,theta3o,theta4o,0,...
 %                 [-50, 50], [-20, 40], eye(3));
