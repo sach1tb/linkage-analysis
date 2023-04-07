@@ -1,25 +1,31 @@
-function [thetaCoupler1, thetaCoupler2, sliderDistance1, sliderDistance2]=cs_position(crankLength, couplerLength,offset, thetaCrank)
+function [t31, t32, d1, d2]=cs_position(a, b,c, t2)
 %
-% crank-slider (or slider-crank) position analysis
+% performs position analysis of a crank-slider linkage
+% with variables named per the convention in crankslider.png
 %
 % Syntax
 %
-%   [thetaCoupler1, ~, sliderDistance1]=cs_position(crankLength, couplerLength,offset, thetaCrank)
-%   [~, thetaCoupler2, ~, sliderDistance2]=cs_position(crankLength, couplerLength,offset, thetaCrank)
+%   [t31, ~, d1]=cs_position(a, b,c, t2)
+%   [~, t32, ~, d2]=cs_position(a, b,c, t2)
 %
 % Description
-%   [thetaCoupler1, ~, sliderDistance1]=cs_position(crankLength, couplerLength,offset, thetaCrank) takes as input the link
-%   lengths crankLength, couplerLength, offset, and the angle(s) thetaCrank for the input link in radians 
+%   [t31, ~, d1]=cs_position(a, b,c, t2) takes as input the link
+%   lengths a, b, c, and the angle(s) t2 for the input link in radians 
 %   and returns the angles theta_3 in radians and distance d for one
 %   configuration
 %
-%   [~, thetaCoupler2, ~, sliderDistance2]=cs_position(crankLength, couplerLength,offset, thetaCrank) takes as input the link
-%   lengths crankLength, couplerLength, offset, and the angle(s) thetaCrank for the input link in radians 
+%   [~, t32, ~, d2]=cs_position(a, b,c, t2) takes as input the link
+%   lengths a, b, c, and the angle(s) t2 for the input link in radians 
 %   and returns the angles theta_3 in radians and distance d for the other
 %   configuration
 
-thetaCoupler1=asin((crankLength*sin(thetaCrank)-offset)/couplerLength);
-thetaCoupler2=pi-thetaCoupler1;
+if nargin<1 
+    t2=pi/3;
+    a=10; b=10; c=10;
+end
 
-sliderDistance1=crankLength*cos(thetaCrank)-couplerLength*cos(thetaCoupler1);
-sliderDistance2=crankLength*cos(thetaCrank)-couplerLength*cos(thetaCoupler2);
+t31=asin((a*sin(t2)-c)/b);
+t32=pi-t31;
+
+d1=a*cos(t2)-b*cos(t31);
+d2=a*cos(t2)-b*cos(t32);

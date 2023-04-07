@@ -1,5 +1,5 @@
 function [a31, a32, ddd1, ddd2, w31, w32, dd1, dd2, ...
-    t31, t32, d1, d2]=cs_acceleration(a, b, c, a2, w2, t2, a1, w1, t1)
+    t31, t32, d1, d2]=cs_acceleration(a, b, c, a2, w2, t2)
 % cs_acceleration performs acceleration, velocity & position analysis of a 
 % crank slider linkage according to the convention in crankslider.png
 % 
@@ -15,12 +15,13 @@ function [a31, a32, ddd1, ddd2, w31, w32, dd1, dd2, ...
 %   and returns the angular velocity w31 and sliding link velocity dd1
 %
 
-if nargin<7 
-    a1=0; w1=0; t1=0; 
+if nargin<1 
+    w2=1; t2=pi/3; a2=1;
+    a=10; b=10; c=10;
 end
 
 [w31, w32, dd1, dd2, ...
-    t31, t32, d1, d2]=cs_velocity(a, b, c, w2, t2, w1, t1);
+    t31, t32, d1, d2]=cs_velocity(a, b, c, w2, t2);
 
 
 
