@@ -44,16 +44,19 @@ end
 
 % link properties **
 % a (crank)
+% is the crank length same as a?
 m2=a*rho; % mass kg
 I2=m2*(a^2)/12; % moment of inertia (replace with actual value if given)
 rCG2=a/2; % location of center of mass on the link length
 
 % b (coupler)
+% is the coupler length same as b?
 m3=b*rho; 
 I3=m3*(b^2)/12; 
 rCG3=b/2;
 
 % c (rocker) 
+% is the rocker length same as c?
 m4=c*rho; 
 I4=m4*(c^2)/12; 
 rCG4=c/2;
