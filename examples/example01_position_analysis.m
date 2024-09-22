@@ -16,14 +16,14 @@ addpath ../core
 
 if nargin< 1
     % link lengths
-    a=1.3; b=1.9; c=2.1; d=2.5; 
+    a=1.3; b=1.9; c=2.1; d=2.5;  % m
 
     % coupler shape
     BAP=pi/4; % radians
     APlen=4; % coupler length
    
     % hoeken's
-%   a=2; b=5; c=5; d=4;
+%   a=2; b=5; c=5; d=4; % m
 %   BAP=0; % radians
 %   APlen=10; 
     

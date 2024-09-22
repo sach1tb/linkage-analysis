@@ -228,7 +228,7 @@ switch linktype
     cfg=ht.Data{7,2};
     w2=ht.Data{8,2};
     simTime=ht.Data{9,2}; % seconds 
-    example01_position_analysis(a,b,c,d,AP,BAP,w2,cfg,simTime);   
+    example01_position_analysis(a,b,c,d,AP,BAP,w2,cfg,1,simTime);   
   case 2 % fourbar pva
     a=ht.Data{1,2};
     b=ht.Data{2,2};
