@@ -8,16 +8,16 @@
     <link rel="stylesheet" href="styles.css">
     <script>
         MathJax = {
-          tex: {
-            inlineMath: [['$', '$'], ['\\(', '\\)']]
-          },
-          svg: {
-            fontCache: 'global'
-          }
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+            },
+            svg: {
+                fontCache: 'global'
+            }
         };
-        </script>
-        <script type="text/javascript" id="MathJax-script" async
-          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+    <script type="text/javascript" id="MathJax-script" async
+        src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
         </script>
 </head>
 
@@ -36,23 +36,19 @@
                 <img src="fourbar.png" alt="fourbar_diagram" width="160" height="180">
 
                 <div>
-                    <label for="crank">a= <span id="crankLength">20</span></label>
+                    <label for="crank">a = <span id="crankLength">20</span></label>
                     <input type="range" id="crank" min="0" max="100" value="20" />
                 </div>
                 <div>
-                    <label for="coupler">b= <span id="couplerLength">70</span></label>
+                    <label for="crankA">$\theta_2$= <span id="crankAngleSlider">30</span></label>
+                    <input type="range" id="crankA" min="0" max="360" value="30" />
+                </div>
+                <div>
+                    <label for="coupler">b = <span id="couplerLength">70</span></label>
                     <input type="range" id="coupler" min="0" max="100" value="70" />
                 </div>
                 <div>
-                    <label for="output">c= <span id="outputLength">90</span></label>
-                    <input type="range" id="output" min="0" max="100" value="90" />
-                </div>
-                <div>
-                    <label for="ground">d= <span id="groundLength">50</span></label>
-                    <input type="range" id="ground" min="0" max="100" value="50" />
-                </div>
-                <div>
-                    <label for="APlen">f= <span id="APLength">30</span></label>
+                    <label for="APlen">f = <span id="APLength">30</span></label>
                     <input type="range" id="APlen" min="0" max="100" value="30" />
                 </div>
                 <div>
@@ -60,8 +56,16 @@
                     <input type="range" id="BAPAngle" min="0" max="90" value="30" />
                 </div>
                 <div>
-                    <label for="crankA">$\theta_2$= <span id="crankAngleSlider">30</span></label>
-                    <input type="range" id="crankA" min="0" max="360" value="30" />
+                    <label for="output">c = <span id="outputLength">90</span></label>
+                    <input type="range" id="output" min="0" max="100" value="90" />
+                </div>
+                <div>
+                    <label for="ground">d = <span id="groundLength">50</span></label>
+                    <input type="range" id="ground" min="0" max="100" value="50" />
+                </div>
+                <div>
+                    <label for="groundA">$\theta_1$= <span id="groundAngleSlider">0</span></label>
+                    <input type="range" id="groundA" min="0" max="180" value="0" />
                 </div>
                 <label for="config">configuration (open or cross)</label>
                 <input type="checkbox" id="config" checked="checked" value="on">
@@ -87,7 +91,16 @@
                         <td id="theta4"></td>
                         <td>degrees</td>
                     </tr>
+                    <!-- <tr>
+                        <td>$\omega_3$</td>
+                        <td id="omega3"></td>
+                        <td>deg./s</td>
+                    </tr>
                     <tr>
+                        <td>$\omega_4$</td>
+                        <td id="omega4"></td>
+                        <td>deg./s</td>
+                    </tr> -->
                 </table>
             </div>
         </div>
@@ -100,25 +113,26 @@
             <div style="width: 25%; float: left;">
                 <img src="crankslider.png" alt="cs_diagram" width="180" height="153">
                 <div>
-                    <label for="crank">a= <span id="crankLength">10</span></label>
-                    <input type="range" id="crank" min="50" max="200" value="10" />
+                    <label for="cs_crank">a= <span id="cs_crankLength">20</span></label>
+                    <input type="range" id="cs_crank" min="1" max="100" value="20" />
                 </div>
                 <div>
-                    <label for="coupler">b= <span id="couplerLength">70</span></label>
-                    <input type="range" id="coupler" min="50" max="200" value="70" />
+                    <label for="cs_crankA">$\theta_2$= <span id="cs_crankAngleSlider">30</span></label>
+                    <input type="range" id="cs_crankA" min="0" max="360" value="30" />
                 </div>
                 <div>
-                    <label for="offset">c= <span id="offsetHeight">10</span></label>
-                    <input type="range" id="offset" min="-20" max="20" value="10" />
+                    <label for="cs_coupler">b= <span id="cs_couplerLength">70</span></label>
+                    <input type="range" id="cs_coupler" min="1" max="100" value="70" />
                 </div>
-
                 <div>
-                    <label for="crankA">$\theta_2$= <span id="crankAngleSlider">30</span></label>
-                    <input type="range" id="crankA" min="0" max="360" value="30" />
+                    <label for="cs_offset">c= <span id="cs_offsetHeight">30</span></label>
+                    <input type="range" id="cs_offset" min="-100" max="100" value="30" />
                 </div>
+                <label for="cs_config">configuration (open or cross)</label>
+                <input type="checkbox" id="cs_config" checked="checked" value="on">
             </div>
             <div style="margin-left: 25%; ">
-                <canvas id="canvas" width="400" height="400" style="border:1px solid black;"></canvas>
+                <canvas id="cs_canvas" width="400" height="400" style="border:1px solid black;"></canvas>
                 <table>
                     <tr>
                         <th>Variable</th>
@@ -139,17 +153,33 @@
                 </table>
             </div>
         </div>
+    </div>
 
-        <div id="Inverted crank slider" class="tabcontent">
-            <h2>Inverted crank slider</h2>
-            coming soon...
+    <div id="Inverted crank slider" class="tabcontent">
+        <h2>Inverted crank slider</h2>
+        <div style="width: 100%;">
+            <div style="width: 25%; float: left;">
+                <img src="inv_crankslider.png" alt="ics_diagram" width="180" height="153">
+            </div>
+            <div style="margin-left: 25%; ">
+                coming soon...
+            </div>
         </div>
+    </div>
 
-        <div id="Jansen" class="tabcontent">
-            <h2>Jansen</h2>
-            coming soon...
+    <div id="Jansen" class="tabcontent">
+        <h2>Jansen</h2>
+        <div style="width: 100%;">
+            <div style="width: 25%; float: left;">
+
+            </div>
+            <div style="margin-left: 25%; ">
+                coming soon...
+            </div>
         </div>
-        <script src="script.js"></script>
+    </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 
 </html>
