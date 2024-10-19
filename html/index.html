@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Four-Bar Linkage</title>
+    <link rel="stylesheet" href="styles.css">
+    <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+        });
+        </script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+    </script>
+</head>
+
+<body>
+
+    <!-- Tab links -->
+    <button class="tablink" onclick="openPage('Fourbar', this)" id="defaultOpen">Fourbar</button>
+    <button class="tablink" onclick="openPage('Crank slider', this)">Crank slider</button>
+    <button class="tablink" onclick="openPage('Inverted crank slider', this)">Inverted crank slider</button>
+    <button class="tablink" onclick="openPage('Jansen', this)">Jansen</button>
+
+    <div id="Fourbar" class="tabcontent">
+        <h2>Four-Bar Linkage Simulator</h2>
+        <div style="width: 100%;">
+            <div style="width: 25%; float: left;">
+                <img src="fourbar.png" alt="fourbar_diagram" width="160" height="180">
+
+                <div>
+                    <label for="crank">a= <span id="crankLength">20</span></label>
+                    <input type="range" id="crank" min="0" max="100" value="20" />
+                </div>
+                <div>
+                    <label for="coupler">b= <span id="couplerLength">70</span></label>
+                    <input type="range" id="coupler" min="0" max="100" value="70" />
+                </div>
+                <div>
+                    <label for="output">c= <span id="outputLength">90</span></label>
+                    <input type="range" id="output" min="0" max="100" value="90" />
+                </div>
+                <div>
+                    <label for="ground">d= <span id="groundLength">50</span></label>
+                    <input type="range" id="ground" min="0" max="100" value="50" />
+                </div>
+                <div>
+                    <label for="APlen">f= <span id="APLength">30</span></label>
+                    <input type="range" id="APlen" min="0" max="100" value="30" />
+                </div>
+                <div>
+                    <label for="BAPAngle">$\phi$= <span id="BAP">30</span></label>
+                    <input type="range" id="BAPAngle" min="0" max="90" value="30" />
+                </div>
+                <div>
+                    <label for="crankA">$\theta_2$= <span id="crankAngleSlider">30</span></label>
+                    <input type="range" id="crankA" min="0" max="360" value="30" />
+                </div>
+                <label for="config">configuration (open or cross)</label>
+                <input type="checkbox" id="config" checked="checked" value="on">
+            </div>
+            <div style="margin-left: 25%; ">
+
+
+
+                <canvas id="canvas" width="400" height="400" style="border:1px solid black;"></canvas>
+                <table>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Value</th>
+                        <th>Units</th>
+                    </tr>
+                    <tr>
+                        <td>$\theta_3$</td>
+                        <td id="theta3"></td>
+                        <td>degrees</td>
+                    </tr>
+                    <tr>
+                        <td>$\theta_4$</td>
+                        <td id="theta4"></td>
+                        <td>degrees</td>
+                    </tr>
+                    <tr>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- <button id="playButton">Play</button> -->
+
+    <div id="Crank slider" class="tabcontent">
+        <h2>Crank slider Linkage Simulator</h2>
+        <div style="width: 100%;">
+            <div style="width: 25%; float: left;">
+                <img src="crankslider.png" alt="cs_diagram" width="180" height="153">
+                <div>
+                    <label for="crank">a= <span id="crankLength">10</span></label>
+                    <input type="range" id="crank" min="50" max="200" value="10" />
+                </div>
+                <div>
+                    <label for="coupler">b= <span id="couplerLength">70</span></label>
+                    <input type="range" id="coupler" min="50" max="200" value="70" />
+                </div>
+                <div>
+                    <label for="offset">c= <span id="offsetHeight">10</span></label>
+                    <input type="range" id="offset" min="-20" max="20" value="10" />
+                </div>
+
+                <div>
+                    <label for="crankA">$\theta_2$= <span id="crankAngleSlider">30</span></label>
+                    <input type="range" id="crankA" min="0" max="360" value="30" />
+                </div>
+            </div>
+            <div style="margin-left: 25%; ">
+                <canvas id="canvas" width="400" height="400" style="border:1px solid black;"></canvas>
+                <table>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Value</th>
+                        <th>Units</th>
+                    </tr>
+                    <tr>
+                        <td>$\theta_3$</td>
+                        <td id="theta3_cs"></td>
+                        <td>degrees</td>
+                    </tr>
+                    <tr>
+                        <td>$d$</td>
+                        <td id="d_cs"></td>
+                        <td>same as link lengths</td>
+                    </tr>
+                    <tr>
+                </table>
+            </div>
+        </div>
+
+        <div id="Inverted crank slider" class="tabcontent">
+            <h2>Inverted crank slider</h2>
+            coming soon...
+        </div>
+
+        <div id="Jansen" class="tabcontent">
+            <h2>Jansen</h2>
+            coming soon...
+        </div>
+        <script src="script.js"></script>
+</body>
+
+</html>
