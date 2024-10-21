@@ -5,6 +5,9 @@ const ctx = canvas.getContext('2d');
 const cs_canvas = document.getElementById('cs_canvas');
 const cs_ctx = cs_canvas.getContext('2d');
 
+// inverted crank slider
+const ics_canvas = document.getElementById('ics_canvas');
+const ics_ctx = ics_canvas.getContext('2d');
 
 // Flip the y-axis
 //ctx.scale(1, -1);
@@ -30,13 +33,23 @@ const cs_offsetSlider = document.getElementById('cs_offset');
 const cs_crankAngleSlider = document.getElementById('cs_crankA');
 const cs_configCheckbox = document.getElementById('cs_config');
 
+// inverted crank slider
+const ics_crank_slider = document.getElementById('ics_crank_slider');
+const ics_gammaSlider = document.getElementById('ics_gammaSlider');
+const ics_groundSlider = document.getElementById('ics_groundSlider');
+const ics_outputSlider = document.getElementById('ics_outputSlider');
+const ics_crankAngleSlider = document.getElementById('ics_crankAngleSlider');
+const ics_configCheckBox = document.getElementById('ics_configCheckBox');
+document.getElementById("ics_configCheckBox").disabled = true
+
+
 // fourbar
 //let isPlaying = false;
-let ground_angle = groundAngleSlider.value*Math.PI/180; // Starting angle for the rotation
-let crank_angle = crankAngleSlider.value*Math.PI/180; // Starting angle for the rotation
+//let ground_angle = groundAngleSlider.value*Math.PI/180; // Starting angle for the rotation
+//let crank_angle = crankAngleSlider.value*Math.PI/180; // Starting angle for the rotation
 
 // crank slider
-let cs_crank_angle = cs_crankAngleSlider.value*Math.PI/180; // Starting angle for the rotation
+//let cs_crank_angle = cs_crankAngleSlider.value*Math.PI/180; // Starting angle for the rotation
 
 
 // Display initial values
@@ -47,8 +60,8 @@ document.getElementById('APLength').innerText = APSlider.value;
 document.getElementById('BAP').innerText = BAPSlider.value;
 document.getElementById('outputLength').innerText = outputSlider.value;
 document.getElementById('crankLength').innerText = crankSlider.value;
-document.getElementById('crankAngleSlider').innerText = crankAngleSlider.value;
-document.getElementById('groundAngleSlider').innerText = groundAngleSlider.value;
+document.getElementById('crankA').innerText = crankAngleSlider.value;
+document.getElementById('groundA').innerText = groundAngleSlider.value;
 
 // crank slider
 document.getElementById('cs_couplerLength').innerText = cs_couplerSlider.value;
@@ -56,6 +69,12 @@ document.getElementById('cs_crankLength').innerText = cs_crankSlider.value;
 document.getElementById('cs_offsetHeight').innerText = cs_offsetSlider.value;
 document.getElementById('cs_crankAngleSlider').innerText = cs_crankAngleSlider.value;
 
+// inverted crank slider
+document.getElementById('ics_groundLength').innerText = ics_groundSlider.value;
+document.getElementById('ics_crank_length').innerText = ics_crank_slider.value;
+document.getElementById('ics_outputLength').innerText = ics_outputSlider.value;
+document.getElementById('ics_crankAngleSlider').innerText = ics_crankAngleSlider.value;
+document.getElementById('ics_gammaSlider').innerText = ics_gammaSlider.value;
 
 // Event listeners to update the display and redraw
 // fourbar
@@ -74,6 +93,13 @@ cs_offsetSlider.oninput = () => updateDisplay(cs_offsetSlider, 'cs_offsetHeight'
 cs_crankAngleSlider.oninput = () => updateDisplay(cs_crankAngleSlider, 'cs_crankAngleSlider');
 cs_couplerSlider.oninput = () => updateDisplay(cs_couplerSlider, 'cs_couplerLength');
 
+// inverted crank slider
+ics_groundSlider.oninput = () => updateDisplay(ics_groundSlider, 'ics_groundLength');
+ics_crank_slider.oninput = () => updateDisplay(ics_crank_slider, 'ics_crank_length');
+ics_outputSlider.oninput = () => updateDisplay(ics_outputSlider, 'ics_outputLength');
+ics_crankAngleSlider.oninput = () => updateDisplay(ics_crankAngleSlider, 'ics_crankAngle');
+ics_gammaSlider.oninput = () => updateDisplay(ics_gammaSlider, 'ics_gammaAngle');
+
 // configuration change
 // fourbar
 config.addEventListener("change", function() {
@@ -85,6 +111,11 @@ cs_config.addEventListener("change", function() {
     drawCrankSlider();
   });
 
+
+  // inverted crank slider
+ics_configCheckBox.addEventListener("change", function() {
+    draw_inv_crank_slider();
+  });
 // playButton.onclick = () => {
 //     isPlaying = !isPlaying;
 //     playButton.innerText = isPlaying ? 'Pause' : 'Play';
@@ -92,6 +123,11 @@ cs_config.addEventListener("change", function() {
 //         animate();
 //     }
 // };
+
+// Initial draw
+drawFourBar();
+drawCrankSlider();
+draw_inv_crank_slider();
 
 function openPage(pageName, elmnt) {
     // Hide all elements with class="tabcontent" by default */
@@ -119,6 +155,7 @@ function updateDisplay(slider, valueId) {
     document.getElementById(valueId).innerText = slider.value;
     drawFourBar();
     drawCrankSlider();
+    draw_inv_crank_slider();
 }
 
 function fourbar_position(a,b,c,d,t2,t1,cfg) {
@@ -170,6 +207,39 @@ function cs_position(a,b,c,t2,cfg){
     return [t3, d]
 }
 
+function ics_position(a,c,d,gamma,t2,cfg){
+    P=a*Math.sin(t2)*Math.sin(gamma) + (a*Math.cos(t2)-d)*Math.cos(gamma);
+    Q=-a*Math.sin(t2)*Math.cos(gamma) + (a*Math.cos(t2)-d)*Math.sin(gamma);
+    R=-c*Math.sin(gamma);
+    
+    S=R-Q;
+    T=2*P;
+    U=Q+R;
+    
+    t41=2*Math.atan2((-T+Math.sqrt(T**2-4*S*U)),(2*S));
+    t42=2*Math.atan2((-T-Math.sqrt(T**2-4*S*U)),(2*S));
+    
+    t31=t41+gamma;
+    t32=t42+gamma;
+    
+    b1=(a*Math.sin(t2)-c*Math.sin(t41))/(Math.sin(t31));
+    b2=(a*Math.sin(t2)-c*Math.sin(t42))/(Math.sin(t32));
+    //b2=Math.abs(b2);
+
+    if (cfg==1) {
+        t3=t31;
+        t4=t41;
+        b=b1;
+    } else {
+        t3=t32;
+        t4=t42;
+        b=b2;
+    }
+    //d=a*Math.cos(t2)-b*Math.cos(t3);
+    return [t3, t4, b]
+
+}
+
 function drawCouplerCurve(){
     const ground = parseInt(groundSlider.value);
     const coupler = parseInt(couplerSlider.value);
@@ -200,8 +270,8 @@ function drawFourBar() {
     const coupler = parseInt(couplerSlider.value);
     const output = parseInt(outputSlider.value);
     const crank = parseInt(crankSlider.value);
-    let crank_angle = crankAngleSlider.value*Math.PI/180; // Starting angle for the rotation
-    let ground_angle = groundAngleSlider.value*Math.PI/180; // Starting angle for the rotation
+    const crank_angle = crankAngleSlider.value*Math.PI/180; // Starting angle for the rotation
+    const ground_angle = groundAngleSlider.value*Math.PI/180; // Starting angle for the rotation
 
     //if (animate){
     //    const crank_angle = parseInt(crankAngleSlider.value)*Math.PI/180;
@@ -310,9 +380,9 @@ function drawFourBar() {
     document.getElementById('theta4').innerText = (output_angle*180/Math.PI).toFixed(2);
     //ctx.fillText('YZA = '+(wrapAngle(crank_angle)*180/Math.PI).toFixed(2), Z.x*0.85, Z.y*0.85);
 
-    crankAngleSlider.value=wrapAngle(crank_angle)*180/Math.PI;
-    crankAngleSlider.oninput = () => updateDisplay(crankAngleSlider, 'crankAngleSlider');
-    document.getElementById('crankAngleSlider').innerText = crankAngleSlider.value;
+    // crankAngleSlider.value=wrapAngle(crank_angle)*180/Math.PI;
+    // crankAngleSlider.oninput = () => updateDisplay(crankAngleSlider, 'crankAngleSlider');
+    // document.getElementById('crankAngleSlider').innerText = crankAngleSlider.value;
 
     let region = new Path2D();
     region.moveTo(A.x, A.y);
@@ -404,6 +474,139 @@ function drawCrankSlider(){
     document.getElementById('d_cs').innerText = d_cs.toFixed(2);
 
 }
+
+
+function draw_inv_crank_slider() {
+    const ics_ground = parseInt(ics_groundSlider.value);
+    const ics_output = parseInt(ics_outputSlider.value);
+    const ics_crank = parseInt(ics_crank_slider.value);
+    const ics_crank_angle = ics_crankAngleSlider.value*Math.PI/180; // Starting angle for the rotation
+    const ics_gamma_angle = ics_gammaSlider.value*Math.PI/180; // Starting angle for the rotation
+
+    const ics_ground_angle=0;
+
+    // Clear the fb_canvas
+    ics_ctx.clearRect(0, 0, ics_canvas.width, ics_canvas.height);
+
+    // Fixed point (Z)
+    const Z= { x: 100, y: 100 };
+
+    const Y = { x: Z.x + ics_ground * Math.cos(ics_ground_angle), 
+        y: Z.y+ ics_ground * Math.sin(ics_ground_angle) }; // ground
+
+    // Calculate positions for the four-bar linkage
+    let cfg=0;
+    if (ics_configCheckBox.checked) {
+        cfg=1;
+    }
+    const ics_angles=ics_position(ics_crank,ics_output,ics_ground,
+        ics_gamma_angle, ics_crank_angle,cfg)
+    const ics_coupler_angle = ics_angles[0];
+    const ics_output_angle = ics_angles[1];
+    const ics_b = ics_angles[2];
+
+    const A = {
+        x: Z.x + ics_crank * Math.cos(ics_crank_angle),
+        y: Z.y + ics_crank * Math.sin(ics_crank_angle)
+    };
+
+    const B = {
+        x: A.x + ics_b * Math.cos(ics_coupler_angle-Math.PI),
+        y: A.y + ics_b * Math.sin(ics_coupler_angle-Math.PI)
+    };
+
+    const P = {
+        x: A.x + (ics_crank+ics_ground+ics_output) * Math.cos(ics_coupler_angle-Math.PI),
+        y: A.y + (ics_crank+ics_ground+ics_output) * Math.sin(ics_coupler_angle-Math.PI)
+    };
+
+    const B1= {
+        x: A.x + (ics_b-10) * Math.cos(ics_coupler_angle-Math.PI) ,
+        y: A.y + (ics_b-10) * Math.sin(ics_coupler_angle-Math.PI)
+    };
+
+    const B2= {
+        x: A.x + (ics_b+10) * Math.cos(ics_coupler_angle-Math.PI) ,
+        y: A.y + (ics_b+10) * Math.sin(ics_coupler_angle-Math.PI)
+    };
+    
+
+    A.y=ics_canvas.height-A.y;
+    B.y=ics_canvas.height-B.y;
+    Z.y=ics_canvas.height-Z.y;
+    Y.y=ics_canvas.height-Y.y;
+    P.y=ics_canvas.height-P.y;
+    B1.y=ics_canvas.height-B1.y;
+    B2.y=ics_canvas.height-B2.y;
+
+    // Draw the links
+    // Draw the ground.
+    ics_ctx.beginPath();
+    ics_ctx.moveTo(Z.x, Z.y);
+    ics_ctx.strokeStyle = '#000000';
+    ics_ctx.lineTo(Y.x, Y.y);
+    ics_ctx.stroke();
+
+    // Draw the crank.
+    ics_ctx.beginPath();
+    ics_ctx.moveTo(Z.x, Z.y);
+    ics_ctx.strokeStyle = '#FF0000';
+    ics_ctx.lineTo(A.x, A.y);
+    ics_ctx.stroke();
+
+    // Draw the coupler.
+    ics_ctx.beginPath();
+    ics_ctx.moveTo(A.x, A.y);
+    ics_ctx.strokeStyle = "#00FF00";
+    ics_ctx.lineTo(P.x, P.y);
+    ics_ctx.stroke();
+    
+    // Draw the output.
+    ics_ctx.beginPath();
+    ics_ctx.moveTo(Y.x, Y.y);
+    ics_ctx.strokeStyle = "#0000FF";
+    ics_ctx.lineTo(B.x, B.y);
+    ics_ctx.stroke();
+
+    // Draw the points
+    drawGround(Z, "rgb(0,0,0,0.5", ics_ctx);
+    drawGround(Y, "rgb(0,0,0,0.5", ics_ctx);
+    drawPinJoint(Z,ics_ctx);
+    drawPinJoint(Y,ics_ctx);
+
+    // draw the slider
+    ics_ctx.save();
+    ics_ctx.lineWidth = 10;
+    ics_ctx.strokeStyle = 'rgba(0, 255, 255, 0.5)';
+    ics_ctx.beginPath();
+    ics_ctx.moveTo(B1.x, B1.y);
+    ics_ctx.lineTo(B2.x, B2.y);
+    ics_ctx.stroke();
+    ics_ctx.restore();
+
+    drawPinJoint(A, ics_ctx);
+
+
+    // show the points
+    ics_ctx.fillText('Z', Z.x*0.95, Z.y*1.05)
+    ics_ctx.fillText('Y', Y.x*1.05, Y.y*1.05)
+    ics_ctx.fillText('B', B.x*1.05, B.y*0.95)
+    ics_ctx.fillText('A', A.x*0.95, A.y*1.05)
+    //fb_ctx.fillText('ZAB = '+((Math.PI-fb_crank_angle)*180/Math.PI+wrapAngle(coupler_angle)*180/Math.PI).toFixed(2) + ' deg.', 300, 10);
+    //fb_ctx.fillText('BYZ = '+((Math.PI-wrapAngle(output_angle))*180/Math.PI).toFixed(2) + ' deg.', 300, 20);
+
+    document.getElementById('theta3_ics').innerText = (wrapAngle(ics_coupler_angle)*180/Math.PI).toFixed(2);
+    document.getElementById('theta4_ics').innerText = (wrapAngle(ics_output_angle)*180/Math.PI).toFixed(2);
+    document.getElementById('b_ics').innerText = ics_b.toFixed(2);
+
+    //fb_ctx.fillText('YZA = '+(wrapAngle(fb_crank_angle)*180/Math.PI).toFixed(2), Z.x*0.85, Z.y*0.85);
+
+    // ics_crankAngleSlider.value=wrapAngle(ics_crank_angle)*180/Math.PI;
+    // ics_crankAngleSlider.oninput = () => updateDisplay(ics_crankAngleSlider, 'fb_crank_angle_slider');
+    // document.getElementById('ics_crankAngleSlider').innerText = ics_crankAngleSlider.value;
+
+}
+
 function wrapAngle(angle) {
     return angle - 2 * Math.PI * Math.floor(angle / (2 * Math.PI));
   }
@@ -440,6 +643,6 @@ function animate() {
 }
 
 // Initial draw
-drawFourBar();
-drawCrankSlider();
+// drawFourBar();
+// drawCrankSlider();
 

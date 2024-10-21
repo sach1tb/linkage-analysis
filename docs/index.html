@@ -27,7 +27,6 @@
     <button class="tablink" onclick="openPage('Fourbar', this)" id="defaultOpen">Fourbar</button>
     <button class="tablink" onclick="openPage('Crank slider', this)">Crank slider</button>
     <button class="tablink" onclick="openPage('Inverted crank slider', this)">Inverted crank slider</button>
-    <button class="tablink" onclick="openPage('Jansen', this)">Jansen</button>
 
     <div id="Fourbar" class="tabcontent">
         <h2>Four-Bar Linkage Simulator</h2>
@@ -149,20 +148,65 @@
                         <td id="d_cs"></td>
                         <td>same as link lengths</td>
                     </tr>
-                    <tr>
                 </table>
             </div>
         </div>
     </div>
 
+    <!-- Inverted crank slider -->
     <div id="Inverted crank slider" class="tabcontent">
         <h2>Inverted crank slider</h2>
         <div style="width: 100%;">
             <div style="width: 25%; float: left;">
                 <img src="inv_crankslider.png" alt="ics_diagram" width="180" height="153">
+
+                <div>
+                    <label for="ics_crank_slider">a= <span id="ics_crank_length">30</span></label>
+                    <input type="range" id="ics_crank_slider" min="1" max="100" value="30" />
+                </div>
+                <div>
+                    <label for="ics_crankAngleSlider">$\theta_2$= <span id="ics_crankAngle">60</span></label>
+                    <input type="range" id="ics_crankAngleSlider" min="0" max="360" value="60" />
+                </div>
+                <div>
+                    <label for="ics_outputSlider">c= <span id="ics_outputLength">50</span></label>
+                    <input type="range" id="ics_outputSlider" min="1" max="100" value="50" />
+                </div>
+                <div>
+                    <label for="ics_groundSlider">d= <span id="ics_groundLength">70</span></label>
+                    <input type="range" id="ics_groundSlider" min="1" max="100" value="70" />
+                </div>
+                <div>
+                    <label for="ics_gammaSlider">$\gamma$= <span id="ics_gammaAngle">90</span></label>
+                    <input type="range" id="ics_gammaSlider" min="0" max="360" value="90" />
+                </div>
+                <label for="ics_configCheckBox">configuration (open or cross)</label>
+                <input type="checkbox" id="ics_configCheckBox" checked="checked" value="on">
             </div>
             <div style="margin-left: 25%; ">
-                coming soon...
+                <canvas id="ics_canvas" width="400" height="400" style="border:1px solid black;"></canvas>
+                <table>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Value</th>
+                        <th>Units</th>
+                    </tr>
+                    <tr>
+                        <td>$\theta_3$</td>
+                        <td id="theta3_ics"></td>
+                        <td>degrees</td>
+                    </tr>
+                    <tr>
+                        <td>$\theta_4$</td>
+                        <td id="theta4_ics"></td>
+                        <td>degrees</td>
+                    </tr>
+                    <tr>
+                        <td>$b$</td>
+                        <td id="b_ics"></td>
+                        <td>same as link lengths</td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
@@ -178,7 +222,7 @@
             </div>
         </div>
     </div>
-    </div>
+    
     <script src="script.js"></script>
 </body>
 
