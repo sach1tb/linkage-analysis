@@ -1,6 +1,6 @@
-const canvas = document.getElementById('canvas');
+const fb_canvas = document.getElementById('fb_canvas');
 //const theta3 = document.getElementById('theta3');
-const ctx = canvas.getContext('2d');
+const ctx = fb_canvas.getContext('2d');
 
 const cs_canvas = document.getElementById('cs_canvas');
 const cs_ctx = cs_canvas.getContext('2d');
@@ -11,7 +11,11 @@ const ics_ctx = ics_canvas.getContext('2d');
 
 // Flip the y-axis
 //ctx.scale(1, -1);
-//ctx.transform(1, 0, 0, -1, 0, canvas.height)
+//ctx.transform(1, 0, 0, -1, 0, fb_canvas.height)
+
+let scale = 1;
+let originX = 0;
+let originY = 0;
 
 // Get slider elements
 // fourbar
@@ -99,6 +103,23 @@ ics_crank_slider.oninput = () => updateDisplay(ics_crank_slider, 'ics_crank_leng
 ics_outputSlider.oninput = () => updateDisplay(ics_outputSlider, 'ics_outputLength');
 ics_crankAngleSlider.oninput = () => updateDisplay(ics_crankAngleSlider, 'ics_crankAngle');
 ics_gammaSlider.oninput = () => updateDisplay(ics_gammaSlider, 'ics_gammaAngle');
+
+// zoom
+fb_canvas.addEventListener("wheel", function(e) {
+    e.preventDefault();
+    const delta = e.deltaY < 0 ? 1.01 : 0.99;
+    const rect = fb_canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+  
+    // Zoom towards the mouse cursor
+    originX = x - (x - originX) * delta;
+    originY = y - (y - originY) * delta;
+    scale *= delta;
+  
+    drawFourBar();
+  });
+
 
 // configuration change
 // fourbar
@@ -260,7 +281,7 @@ function drawCouplerCurve(){
                     x: Z.x + crank * Math.cos(t2) + APSlider.value * Math.cos(BAPSlider.value*Math.PI/180+angles[0]),
                     y: Z.y + crank * Math.sin(t2) + APSlider.value * Math.sin(BAPSlider.value*Math.PI/180+angles[0])
             };
-            P.y=canvas.height-P.y;
+            P.y=fb_canvas.height-P.y;
             ctx.fillRect(P.x,P.y,1,1);
         }
 }
@@ -276,10 +297,14 @@ function drawFourBar() {
     //if (animate){
     //    const crank_angle = parseInt(crankAngleSlider.value)*Math.PI/180;
     //}
-    // Clear the canvas
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Clear the fb_canvas
+    ctx.clearRect(0, 0, fb_canvas.width, fb_canvas.height);
     //drawCouplerCurve();
+    ctx.save();
+    ctx.translate(originX, originY);
+    ctx.scale(scale, scale);
 
+    // Draw your content here
     // Fixed point (Z)
     const Z= { x: 100, y: 100 };
 
@@ -311,11 +336,11 @@ function drawFourBar() {
         y: A.y + APSlider.value * Math.sin(BAPSlider.value*Math.PI/180+coupler_angle)
     };
 
-    A.y=canvas.height-A.y;
-    B.y=canvas.height-B.y;
-    Z.y=canvas.height-Z.y;
-    Y.y=canvas.height-Y.y;
-    P.y=canvas.height-P.y;
+    A.y=fb_canvas.height-A.y;
+    B.y=fb_canvas.height-B.y;
+    Z.y=fb_canvas.height-Z.y;
+    Y.y=fb_canvas.height-Y.y;
+    P.y=fb_canvas.height-P.y;
 
     // Draw the links
     // Draw the ground.
@@ -393,6 +418,8 @@ function drawFourBar() {
     // Fill path
     ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
     ctx.fill(region, "evenodd");
+
+    ctx.restore();
 
 }
 
