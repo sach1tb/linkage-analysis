@@ -14,6 +14,10 @@ const scr_ctx = scr_canvas.getContext('2d');
 const ics_canvas = document.getElementById('ics_canvas');
 const ics_ctx = ics_canvas.getContext('2d');
 
+// inverted slider crank
+const iscr_canvas = document.getElementById('iscr_canvas');
+const iscr_ctx = iscr_canvas.getContext('2d');
+
 // Flip the y-axis
 //fb_ctx.scale(1, -1);
 //fb_ctx.transform(1, 0, 0, -1, 0, fb_canvas.height)
@@ -56,8 +60,17 @@ const ics_groundSlider = document.getElementById('ics_groundSlider');
 const ics_outputSlider = document.getElementById('ics_outputSlider');
 const ics_crankAngleSlider = document.getElementById('ics_crankAngleSlider');
 const ics_configCheckBox = document.getElementById('ics_configCheckBox');
-document.getElementById("ics_configCheckBox").disabled = true
+//document.getElementById("ics_configCheckBox").disabled = true
 
+
+// inverted slider crank
+const iscr_crank_slider = document.getElementById('iscr_crank_slider');
+const iscr_gammaSlider = document.getElementById('iscr_gammaSlider');
+const iscr_groundSlider = document.getElementById('iscr_groundSlider');
+const iscr_outputSlider = document.getElementById('iscr_outputSlider');
+const iscr_coupler_length_slider = document.getElementById('iscr_coupler_length_slider');
+const iscr_configCheckBox = document.getElementById('iscr_configCheckBox');
+//document.getElementById("iscr_configCheckBox").disabled = true
 
 // fourbar
 //let isPlaying = false;
@@ -91,13 +104,19 @@ document.getElementById('scr_crankLength').innerText = scr_crankSlider.value;
 document.getElementById('scr_offsetHeight').innerText = scr_offsetSlider.value;
 document.getElementById('scr_slider_distance').innerText = scr_slider_distance_slider.value;
 
-
 // inverted crank slider
 document.getElementById('ics_groundLength').innerText = ics_groundSlider.value;
 document.getElementById('ics_crank_length').innerText = ics_crank_slider.value;
 document.getElementById('ics_outputLength').innerText = ics_outputSlider.value;
 document.getElementById('ics_crankAngleSlider').innerText = ics_crankAngleSlider.value;
 document.getElementById('ics_gammaSlider').innerText = ics_gammaSlider.value;
+
+// inverted slider crank
+document.getElementById('iscr_groundLength').innerText = iscr_groundSlider.value;
+document.getElementById('iscr_crank_length').innerText = iscr_crank_slider.value;
+document.getElementById('iscr_outputLength').innerText = iscr_outputSlider.value;
+document.getElementById('iscr_coupler_length').innerText = iscr_coupler_length_slider.value;
+document.getElementById('iscr_gammaSlider').innerText = iscr_gammaSlider.value;
 
 // Event listeners to update the display and redraw
 // fourbar
@@ -128,6 +147,13 @@ ics_crank_slider.oninput = () => updateDisplay(ics_crank_slider, 'ics_crank_leng
 ics_outputSlider.oninput = () => updateDisplay(ics_outputSlider, 'ics_outputLength');
 ics_crankAngleSlider.oninput = () => updateDisplay(ics_crankAngleSlider, 'ics_crankAngle');
 ics_gammaSlider.oninput = () => updateDisplay(ics_gammaSlider, 'ics_gammaAngle');
+
+// inverted slider crank
+iscr_groundSlider.oninput = () => updateDisplay(iscr_groundSlider, 'iscr_groundLength');
+iscr_crank_slider.oninput = () => updateDisplay(iscr_crank_slider, 'iscr_crank_length');
+iscr_outputSlider.oninput = () => updateDisplay(iscr_outputSlider, 'iscr_outputLength');
+iscr_coupler_length_slider.oninput = () => updateDisplay(iscr_coupler_length_slider, 'iscr_coupler_length');
+iscr_gammaSlider.oninput = () => updateDisplay(iscr_gammaSlider, 'iscr_gammaAngle');
 
 // zoom -- commenting because it doesn't work very well on smart devices
 // and the coupler curve plot looks funny
@@ -164,10 +190,14 @@ scr_config.addEventListener("change", function () {
     drawSliderCrank();
 });
 
-
 // inverted crank slider
 ics_configCheckBox.addEventListener("change", function () {
     draw_inv_crank_slider();
+});
+
+// inverted crank slider
+iscr_configCheckBox.addEventListener("change", function () {
+    draw_inv_slider_crank();
 });
 
 // curve plotting
@@ -231,6 +261,7 @@ drawFourBar();
 drawCrankSlider();
 drawSliderCrank();
 draw_inv_crank_slider();
+draw_inv_slider_crank();
 
 function openPage(pageName, elmnt) {
     // Hide all elements with class="tabcontent" by default */
@@ -261,6 +292,7 @@ function updateDisplay(slider, valueId) {
     drawCrankSlider();
     drawSliderCrank();
     draw_inv_crank_slider();
+    draw_inv_slider_crank();
 }
 
 function fourbar_position(a, b, c, d, t2, t1, cfg) {
@@ -372,12 +404,42 @@ function ics_position(a, c, d, gamma, t2, cfg) {
 
 }
 
+
+function iscr_position(a, b, c, d, gamma, cfg) {
+    K1 = a**2 -d**2-c**2-b**2-2*b*c*Math.cos(gamma);
+    K2 = 2*d;
+    
+    F = -K2*c - K1 - K2*b*Math.cos(gamma);
+    G = -K2*b*2*Math.sin(gamma);
+    H = K2*c + K2*b*Math.cos(gamma) - K1;
+
+
+    t41 = 2 * Math.atan2((-G + Math.sqrt(G**2 - 4 * F * H)), (2 * F));
+    t42 = 2 * Math.atan2((-G - Math.sqrt(G**2 - 4 * F * H)), (2 * F));
+
+    if (cfg == 1) {
+        t4 = t41;
+    } else {
+        t4 = t42;
+    }
+
+    t3=t4+gamma;
+    tx=(d+c*Math.cos(t4)+b*Math.cos(t3));
+    ty=(c*Math.sin(t4)+b*Math.sin(t3));
+    t2=Math.atan2(ty,tx);
+    // t2=(Math.asin((c*Math.sin(t4)+b*Math.sin(t3))/a));
+    //d=a*Math.cos(t2)-b*Math.cos(t3);
+    return [t2, t3, t4]
+
+}
+
+
 function drawCouplerCurve() {
     const ground = parseInt(fb_groundSlider.value);
     const coupler = parseInt(fb_couplerSlider.value);
     const output = parseInt(fb_outputSlider.value);
     const crank = parseInt(fb_crankSlider.value);
-    const ground_angle = fb_groundAngleSlider.value * Math.PI / 180; // Starting angle for the rotation
+    const ground_angle = parseInt(fb_groundAngleSlider.value) * Math.PI / 180; // Starting angle for the rotation
 
     // Fixed point (Z)
     const Z = { x: 100, y: 100 };
@@ -439,8 +501,8 @@ function drawFourBar() {
     const coupler = parseInt(fb_couplerSlider.value);
     const output = parseInt(fb_outputSlider.value);
     const crank = parseInt(fb_crankSlider.value);
-    const crank_angle = fb_crankAngleSlider.value * Math.PI / 180; // Starting angle for the rotation
-    const ground_angle = fb_groundAngleSlider.value * Math.PI / 180; // Starting angle for the rotation
+    const crank_angle = parseInt(fb_crankAngleSlider.value) * Math.PI / 180; // Starting angle for the rotation
+    const ground_angle = parseInt(fb_groundAngleSlider.value) * Math.PI / 180; // Starting angle for the rotation
 
     //if (animate){
     //    const crank_angle = parseInt(fb_crankAngleSlider.value)*Math.PI/180;
@@ -579,7 +641,7 @@ function drawCrankSlider() {
     const cs_coupler = parseInt(cs_couplerSlider.value);
     const cs_crank = parseInt(cs_crankSlider.value);
     const cs_offset = parseInt(cs_offsetSlider.value);
-    let cs_crank_angle = cs_crankAngleSlider.value * Math.PI / 180; // Starting angle for the rotation
+    let cs_crank_angle = parseInt(cs_crankAngleSlider.value) * Math.PI / 180; // Starting angle for the rotation
 
     cs_ctx.clearRect(0, 0, cs_canvas.width, cs_canvas.height);
     //drawCouplerCurve();
@@ -647,6 +709,7 @@ function drawCrankSlider() {
 
     // show the points
     cs_ctx.font = 'bold 12pt Arial';
+    cs_ctx.fillStyle = "rgb(0,0,0,0.5";
     cs_ctx.fillText('Z', Z.x * 0.95, Z.y * 1.05)
     cs_ctx.fillText('B', B.x * 1.05, B.y * 0.95)
     cs_ctx.fillText('A', A.x * 0.95, A.y * 1.05)
@@ -662,7 +725,7 @@ function drawSliderCrank() {
     const scr_coupler = parseInt(scr_couplerSlider.value);
     const scr_crank = parseInt(scr_crankSlider.value);
     const scr_offset = parseInt(scr_offsetSlider.value);
-    let scr_slider_distance = scr_slider_distance_slider.value; // Starting angle for the rotation
+    let scr_slider_distance = parseInt(scr_slider_distance_slider.value); // Starting angle for the rotation
 
     scr_ctx.clearRect(0, 0, scr_canvas.width, scr_canvas.height);
     //drawCouplerCurve();
@@ -730,6 +793,7 @@ function drawSliderCrank() {
 
     // show the points
     scr_ctx.font = 'bold 12pt Arial';
+    scr_ctx.fillStyle = "rgb(0,0,0,0.5";
     scr_ctx.fillText('Z', Z.x * 0.95, Z.y * 1.05)
     scr_ctx.fillText('B', B.x * 1.05, B.y * 0.95)
     scr_ctx.fillText('A', A.x * 0.95, A.y * 1.05)
@@ -744,8 +808,8 @@ function draw_inv_crank_slider() {
     const ics_ground = parseInt(ics_groundSlider.value);
     const ics_output = parseInt(ics_outputSlider.value);
     const ics_crank = parseInt(ics_crank_slider.value);
-    const ics_crank_angle = ics_crankAngleSlider.value * Math.PI / 180; // Starting angle for the rotation
-    const ics_gamma_angle = ics_gammaSlider.value * Math.PI / 180; // Starting angle for the rotation
+    const ics_crank_angle = parseInt(ics_crankAngleSlider.value) * Math.PI / 180; // Starting angle for the rotation
+    const ics_gamma_angle = parseInt(ics_gammaSlider.value) * Math.PI / 180; // Starting angle for the rotation
 
     const ics_ground_angle = 0;
 
@@ -782,8 +846,8 @@ function draw_inv_crank_slider() {
     };
 
     const P = {
-        x: A.x + (ics_crank + ics_ground + ics_output) * Math.cos(ics_coupler_angle - Math.PI),
-        y: A.y + (ics_crank + ics_ground + ics_output) * Math.sin(ics_coupler_angle - Math.PI)
+        x: A.x + Math.sign(ics_b)*(ics_crank + ics_ground + ics_output) * Math.cos(ics_coupler_angle - Math.PI),
+        y: A.y + Math.sign(ics_b)*(ics_crank + ics_ground + ics_output) * Math.sin(ics_coupler_angle - Math.PI)
     };
 
     const B1 = {
@@ -856,6 +920,7 @@ function draw_inv_crank_slider() {
 
     // show the points
     ics_ctx.font = 'bold 12pt Arial';
+    ics_ctx.fillStyle = "rgb(0,0,0,0.5";
     ics_ctx.fillText('Z', Z.x * 0.95, Z.y * 1.05)
     ics_ctx.fillText('Y', Y.x * 1.05, Y.y * 1.05)
     ics_ctx.fillText('B', B.x * 1.05, B.y * 0.95)
@@ -874,6 +939,143 @@ function draw_inv_crank_slider() {
     // document.getElementById('ics_crankAngleSlider').innerText = ics_crankAngleSlider.value;
 
 }
+
+function draw_inv_slider_crank() {
+    const iscr_ground = parseInt(iscr_groundSlider.value);
+    const iscr_output = parseInt(iscr_outputSlider.value);
+    const iscr_crank = parseInt(iscr_crank_slider.value);
+    const iscr_b = parseInt(iscr_coupler_length_slider.value); // Starting angle for the rotation
+    const iscr_gamma_angle = parseInt(iscr_gammaSlider.value) * Math.PI / 180; // Starting angle for the rotation
+
+    const iscr_ground_angle = 0;
+
+    // Clear the fb_canvas
+    iscr_ctx.clearRect(0, 0, iscr_canvas.width, iscr_canvas.height);
+
+    // Fixed point (Z)
+    const Z = { x: 100, y: 100 };
+
+    const Y = {
+        x: Z.x + iscr_ground * Math.cos(iscr_ground_angle),
+        y: Z.y + iscr_ground * Math.sin(iscr_ground_angle)
+    }; // ground
+
+    // Calculate positions for the four-bar linkage
+    let cfg = 0;
+    if (iscr_configCheckBox.checked) {
+        cfg = 1;
+    }
+    const iscr_angles = iscr_position(iscr_crank, iscr_b, iscr_output, iscr_ground,
+        iscr_gamma_angle, cfg)
+    const iscr_crank_angle = iscr_angles[0];
+    const iscr_coupler_angle = iscr_angles[1];
+    const iscr_output_angle = iscr_angles[2];
+    
+    const A = {
+        x: Z.x + iscr_crank * Math.cos(iscr_crank_angle),
+        y: Z.y + iscr_crank * Math.sin(iscr_crank_angle)
+    };
+
+    const B = {
+        x: A.x + iscr_b * Math.cos(iscr_coupler_angle - Math.PI),
+        y: A.y + iscr_b * Math.sin(iscr_coupler_angle - Math.PI)
+    };
+
+    const P = {
+        x: A.x + (iscr_crank + iscr_ground + iscr_output) * Math.cos(iscr_coupler_angle - Math.PI),
+        y: A.y + (iscr_crank + iscr_ground + iscr_output) * Math.sin(iscr_coupler_angle - Math.PI)
+    };
+
+    const B1 = {
+        x: A.x + (iscr_b - 10) * Math.cos(iscr_coupler_angle - Math.PI),
+        y: A.y + (iscr_b - 10) * Math.sin(iscr_coupler_angle - Math.PI)
+    };
+
+    const B2 = {
+        x: A.x + (iscr_b + 10) * Math.cos(iscr_coupler_angle - Math.PI),
+        y: A.y + (iscr_b + 10) * Math.sin(iscr_coupler_angle - Math.PI)
+    };
+
+
+    A.y = iscr_canvas.height - A.y;
+    B.y = iscr_canvas.height - B.y;
+    Z.y = iscr_canvas.height - Z.y;
+    Y.y = iscr_canvas.height - Y.y;
+    P.y = iscr_canvas.height - P.y;
+    B1.y = iscr_canvas.height - B1.y;
+    B2.y = iscr_canvas.height - B2.y;
+
+    // Draw the links
+    iscr_ctx.lineWidth = 2;
+    // Draw the ground.
+    iscr_ctx.beginPath();
+    iscr_ctx.moveTo(Z.x, Z.y);
+    iscr_ctx.strokeStyle = '#000000';
+    iscr_ctx.lineTo(Y.x, Y.y);
+    iscr_ctx.stroke();
+
+    // Draw the crank.
+    iscr_ctx.beginPath();
+    iscr_ctx.moveTo(Z.x, Z.y);
+    iscr_ctx.strokeStyle = '#FF0000';
+    iscr_ctx.lineTo(A.x, A.y);
+    iscr_ctx.stroke();
+
+    // Draw the coupler.
+    iscr_ctx.beginPath();
+    iscr_ctx.moveTo(A.x, A.y);
+    iscr_ctx.strokeStyle = "#00FF00";
+    iscr_ctx.lineTo(P.x, P.y);
+    iscr_ctx.stroke();
+
+    // Draw the output.
+    iscr_ctx.beginPath();
+    iscr_ctx.moveTo(Y.x, Y.y);
+    iscr_ctx.strokeStyle = "#0000FF";
+    iscr_ctx.lineTo(B.x, B.y);
+    iscr_ctx.stroke();
+
+    // Draw the points
+    drawGround(Z, "rgb(0,0,0,0.5", iscr_ctx);
+    drawGround(Y, "rgb(0,0,0,0.5", iscr_ctx);
+    drawPinJoint(Z, iscr_ctx);
+    drawPinJoint(Y, iscr_ctx);
+
+    // draw the slider
+    iscr_ctx.save();
+    iscr_ctx.lineWidth = 10;
+    iscr_ctx.strokeStyle = 'rgba(0, 255, 255, 0.5)';
+    iscr_ctx.beginPath();
+    iscr_ctx.moveTo(B1.x, B1.y);
+    iscr_ctx.lineTo(B2.x, B2.y);
+    iscr_ctx.stroke();
+    iscr_ctx.restore();
+
+    drawPinJoint(A, iscr_ctx);
+
+
+    // show the points
+    iscr_ctx.font = 'bold 12pt Arial';
+    iscr_ctx.fillStyle = "rgb(0,0,0,0.5";
+    iscr_ctx.fillText('Z', Z.x * 0.95, Z.y * 1.05)
+    iscr_ctx.fillText('Y', Y.x * 1.05, Y.y * 1.05)
+    iscr_ctx.fillText('B', B.x * 1.05, B.y * 0.95)
+    iscr_ctx.fillText('A', A.x * 0.95, A.y * 1.05)
+    //fb_ctx.fillText('ZAB = '+((Math.PI-fb_crank_angle)*180/Math.PI+wrapAngle(coupler_angle)*180/Math.PI).toFixed(2) + ' deg.', 300, 10);
+    //fb_ctx.fillText('BYZ = '+((Math.PI-wrapAngle(output_angle))*180/Math.PI).toFixed(2) + ' deg.', 300, 20);
+
+    document.getElementById('theta2_iscr').innerText = (wrapAngle(iscr_crank_angle) * 180 / Math.PI).toFixed(2);
+    document.getElementById('theta3_iscr').innerText = (wrapAngle(iscr_coupler_angle) * 180 / Math.PI).toFixed(2);
+    document.getElementById('theta4_iscr').innerText = (wrapAngle(iscr_output_angle) * 180 / Math.PI).toFixed(2);
+
+    //fb_ctx.fillText('YZA = '+(wrapAngle(fb_crank_angle)*180/Math.PI).toFixed(2), Z.x*0.85, Z.y*0.85);
+
+    // ics_crankAngleSlider.value=wrapAngle(ics_crank_angle)*180/Math.PI;
+    // ics_crankAngleSlider.oninput = () => updateDisplay(ics_crankAngleSlider, 'fb_crank_angle_slider');
+    // document.getElementById('ics_crankAngleSlider').innerText = ics_crankAngleSlider.value;
+
+}
+
 
 function wrapAngle(angle) {
     return angle - 2 * Math.PI * Math.floor(angle / (2 * Math.PI));

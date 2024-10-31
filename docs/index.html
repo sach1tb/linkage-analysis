@@ -28,6 +28,7 @@
     <button class="tablink" onclick="openPage('Crank slider', this)">Crank slider</button>
     <button class="tablink" onclick="openPage('Slider crank', this)">Slider crank</button>
     <button class="tablink" onclick="openPage('Inverted crank slider', this)">Inverted crank slider</button>
+    <button class="tablink" onclick="openPage('Inverted slider crank', this)">Inverted slider crank</button>
 
     <div id="Fourbar" class="tabcontent">
         <h2>Fourbar linkage simulator</h2>
@@ -267,6 +268,63 @@
     </div>
     
     <!-- Inverted slider crank -->
+    <div id="Inverted slider crank" class="tabcontent">
+        <h2>Inverted crank slider linkage simulator</h2>
+        <div style="width: 100%;">
+            <div style="width: 25%; float: left;">
+                <img src="inv_slidercrank.png" alt="iscr_diagram" width="75%">
+
+                <div>
+                    <label for="iscr_crank_slider">a= <span id="iscr_crank_length">30</span></label>
+                    <input type="range" id="iscr_crank_slider" min="1" max="100" value="30" />
+                </div>
+                <div>
+                    <label for="iscr_coupler_length_slider" style="color:red;">b= <span id="iscr_coupler_length">30</span></label>
+                    <input type="range" id="iscr_coupler_length_slider" min="0" max="100" value="30" />
+                </div>
+                <div>
+                    <label for="iscr_outputSlider">c= <span id="iscr_outputLength">50</span></label>
+                    <input type="range" id="iscr_outputSlider" min="1" max="100" value="50" />
+                </div>
+                <div>
+                    <label for="iscr_groundSlider">d= <span id="iscr_groundLength">70</span></label>
+                    <input type="range" id="iscr_groundSlider" min="1" max="100" value="70" />
+                </div>
+                <div>
+                    <label for="iscr_gammaSlider">$\gamma$= <span id="iscr_gammaAngle">90</span></label>
+                    <input type="range" id="iscr_gammaSlider" min="0" max="360" value="90" />
+                </div>
+                <label for="iscr_configCheckBox">configuration (open or cross)</label>
+                <input type="checkbox" id="iscr_configCheckBox" checked="checked" value="on">
+            </div>
+            <div style="margin-left: 25%; ">
+                <canvas id="iscr_canvas" width="400" height="400" style="border:1px solid black;"></canvas>
+                <table>
+                    <tr>
+                        <th>Variable</th>
+                        <th>Value</th>
+                        <th>Units</th>
+                    </tr>
+                    <tr>
+                        <td>$\theta_2$</td>
+                        <td id="theta2_iscr"></td>
+                        <td>degrees</td>
+                    </tr>
+                    <tr>
+                        <td>$\theta_3$</td>
+                        <td id="theta3_iscr"></td>
+                        <td>degrees</td>
+                    </tr>
+                    <tr>
+                        <td>$\theta_4$</td>
+                        <td id="theta4_iscr"></td>
+                        <td>degrees</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
     <!-- Fourbar with pantograph -->
     <script src="script.js"></script>
 </body>
