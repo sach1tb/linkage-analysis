@@ -29,6 +29,7 @@
     <button class="tablink" onclick="openPage('Slider crank', this)">Slider crank</button>
     <button class="tablink" onclick="openPage('Inverted crank slider', this)">Inverted crank slider</button>
     <button class="tablink" onclick="openPage('Inverted slider crank', this)">Inverted slider crank</button>
+    <button class="tablink" onclick="openPage('help', this)">?</button>
 
     <div id="Fourbar" class="tabcontent">
         <h2>Fourbar linkage simulator</h2>
@@ -37,28 +38,29 @@
                 <img src="fourbar.png" alt="fourbar_diagram" width="75%">
 
                 <div>
-                    <label for="fb_crank">a = <span id="fb_crankLength">20</span></label>
-                    <input type="range" id="fb_crank" min="0" max="200" value="20" />
+                    <label for="fb_crank">a = <span id="fb_crankLength">35</span></label>
+                    <input type="range" id="fb_crank" min="0" max="200" value="35" />
                 </div>
                 <div>
-                    <label for="fb_crankA" style="color:red;">$\theta_2$= <span id="fb_crankAngleSlider">30</span></label>
-                    <input type="range" id="fb_crankA" min="0" max="360" value="30" />
+                    <label for="fb_crankA" style="color:red;">$\theta_2$= <span
+                            id="fb_crankAngleSlider">60</span></label>
+                    <input type="range" id="fb_crankA" min="0" max="360" value="60" />
                 </div>
                 <div>
                     <label for="fb_coupler">b = <span id="fb_couplerLength">70</span></label>
                     <input type="range" id="fb_coupler" min="0" max="200" value="70" />
                 </div>
                 <div>
-                    <label for="fb_APlen">f = <span id="fb_APLength">30</span></label>
-                    <input type="range" id="fb_APlen" min="0" max="200" value="30" />
+                    <label for="fb_APlen">f = <span id="fb_APLength">80</span></label>
+                    <input type="range" id="fb_APlen" min="0" max="200" value="80" />
                 </div>
                 <div>
                     <label for="fb_BAPAngle">$\phi$= <span id="fb_BAP">30</span></label>
                     <input type="range" id="fb_BAPAngle" min="-180" max="180" value="30" />
                 </div>
                 <div>
-                    <label for="fb_output">c = <span id="fb_outputLength">90</span></label>
-                    <input type="range" id="fb_output" min="0" max="200" value="90" />
+                    <label for="fb_output">c = <span id="fb_outputLength">75</span></label>
+                    <input type="range" id="fb_output" min="0" max="200" value="75" />
                 </div>
                 <div>
                     <label for="fb_ground">d = <span id="fb_groundLength">50</span></label>
@@ -72,7 +74,7 @@
                 <input type="checkbox" id="fb_config" checked="checked" value="on">
                 <br>
                 <button id="fb_plot_curve_button">Plot</button>
-                <label for="fb_plot_curve_button">coupler curve (point P trajectory).</label>
+                <label for="fb_plot_curve_button">the coupler curve (trajectory of point P).</label>
                 <label for="fb_2x_link_lengths">Scale link lengths by</label>
                 <button id="fb_2x_link_lengths">2x</button>
                 <label for="fb_p5x_link_lengths">or by</label>
@@ -124,7 +126,8 @@
                     <input type="range" id="cs_crank" min="1" max="100" value="20" />
                 </div>
                 <div>
-                    <label for="cs_crankA" style="color:red;">$\theta_2$= <span id="cs_crankAngleSlider">30</span></label>
+                    <label for="cs_crankA" style="color:red;">$\theta_2$= <span
+                            id="cs_crankAngleSlider">30</span></label>
                     <input type="range" id="cs_crankA" min="0" max="360" value="30" />
                 </div>
                 <div>
@@ -180,7 +183,8 @@
                     <input type="range" id="scr_offset" min="-100" max="100" value="0" />
                 </div>
                 <div>
-                    <label for="scr_slider_distance_slider" style="color:red;">d = <span id="scr_slider_distance">75</span></label>
+                    <label for="scr_slider_distance_slider" style="color:red;">d = <span
+                            id="scr_slider_distance">75</span></label>
                     <input type="range" id="scr_slider_distance_slider" min="1" max="200" value="75" step="1" />
                 </div>
                 <label for="scr_config">configuration (open or cross)</label>
@@ -221,7 +225,8 @@
                     <input type="range" id="ics_crank_slider" min="1" max="100" value="30" />
                 </div>
                 <div>
-                    <label for="ics_crankAngleSlider" style="color:red;">$\theta_2$= <span id="ics_crankAngle">60</span></label>
+                    <label for="ics_crankAngleSlider" style="color:red;">$\theta_2$= <span
+                            id="ics_crankAngle">60</span></label>
                     <input type="range" id="ics_crankAngleSlider" min="0" max="360" value="60" />
                 </div>
                 <div>
@@ -266,7 +271,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Inverted slider crank -->
     <div id="Inverted slider crank" class="tabcontent">
         <h2>Inverted slider crank linkage simulator</h2>
@@ -279,7 +284,8 @@
                     <input type="range" id="iscr_crank_slider" min="1" max="100" value="30" />
                 </div>
                 <div>
-                    <label for="iscr_coupler_length_slider" style="color:red;">b= <span id="iscr_coupler_length">30</span></label>
+                    <label for="iscr_coupler_length_slider" style="color:red;">b= <span
+                            id="iscr_coupler_length">30</span></label>
                     <input type="range" id="iscr_coupler_length_slider" min="0" max="100" value="30" />
                 </div>
                 <div>
@@ -325,7 +331,27 @@
         </div>
     </div>
 
-    <!-- Fourbar with pantograph -->
+    <!-- help -->
+    <div id="help" class="tabcontent">
+        <h2>Linkage simulators</h2>
+        <div style="width: 100%;">
+            <div style="width:800px; margin:0 auto;">
+                <p>These pages show standard linkages typically studied as part of a mechanism design and analysis course.
+                These linkages form the building blocks of many mechanisms in the real world, such as pumpjack, door
+                closers, hand pumps,
+                internal combustion engines, compressors, and backhoes, to name a few. </p>
+                <p>On each page, a kinematic diagram of
+                the linkage
+                shows parts of the linkage with labels depicting angles and lengths. Sliders can be used to vary design
+                parameters
+                such as link lengths and orientations. The parameter <span style="color:red">label in red</span>
+                serves as the input to the mechanism and the output
+                angles or lengths
+                are listed in a table below the linkage.
+            </p>
+            </div>
+        </div>
+    </div>
     <script src="script.js"></script>
 </body>
 
