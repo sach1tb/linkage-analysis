@@ -1,5 +1,5 @@
 function example10_newtonian_method(a,b,c,d,alpha2,omega2,theta2, rho, ...
-                        F2, F3, F4, rF2, rF3, rF4, T3, T4)
+                        Fe2, Fe3, Fe4, rFe2, rFe3, rFe4, Te3, Te4)
 addpath ../core
 
 % newtonian method: gives pin  joint forces and input torque for a required
@@ -15,6 +15,11 @@ if nargin < 1
     % link lengths
     a=0.86; b=1.85; c=0.86; d=2.22; 
     
+    % crank/input
+    alpha2=10;          % angular acceleration
+    omega2=-10;         % angular velocity
+    theta2=-36*pi/180;  % angular position
+    
     % coupler shape
     BAP=0; % radians
     APlen=b; % coupler length
@@ -24,21 +29,19 @@ if nargin < 1
     rho=23.4791;             % material density per length kg/m
                              % if this is not available put m2, I2, m3, ...
                              % etc. directly below
-    
-    rF2=0.0;            % external force location on link 2
-    rF3=1.33;           % external force location on link 3
-    rF4=0.0;            % external force location on link 4
-    
-    alpha2=10;          % angular acceleration
-    omega2=-10;         % angular velocity
-    theta2=-36*pi/180;  % angular position
 
-    F2=[0; 0];          % external force on link 2
-    F3=[500; 0];        % external force on link 3
-    F4=[0; 0];          % ....
+    % external forces                 
+    rFe2=0.0;            % external force location on link 2
+    rFe3=1.33;           % external force location on link 3
+    rFe4=0.0;            % external force location on link 4
     
-    T3=0; % external torque on link 3
-    T4=0; % external torque on link 4
+    Fe2=[0; 0];          % external force on link 2, i and j components
+    Fe3=[500; 0];        % external force on link 3, i and j components
+    Fe4=[0; 0];          % ....
+    
+    % external torques
+    Te3=0; % external torque on link 3
+    Te4=0; % external torque on link 4
 end
 
 
@@ -112,9 +115,9 @@ R14=[   rCG4*cos(theta4o+pi);
         rCG4*sin(theta4o+pi)];
 
 % location of where the force is acting in link's CG frame **
-RF2=[(rF2-rCG2)*cos(theta2); (rF2-rCG2)*sin(theta2)];
-RF3=[(rF3-rCG3)*cos(theta3o); (rF3-rCG3)*sin(theta3o)];
-RF4=[(rF4-rCG4)*cos(theta4o); (rF4-rCG4)*sin(theta4o)];
+RFe2=[(rFe2-rCG2)*cos(theta2); (rFe2-rCG2)*sin(theta2)];
+RFe3=[(rFe3-rCG3)*cos(theta3o); (rFe3-rCG3)*sin(theta3o)];
+RFe4=[(rFe4-rCG4)*cos(theta4o); (rFe4-rCG4)*sin(theta4o)];
 
 
 % accelerations of each link at its center of gravity ** (change only if
@@ -133,15 +136,15 @@ aG4y = rCG4*alpha4o.*cos(theta4o) -rCG4*omega4o.^2.*sin(theta4o);
 
 % solve the newtonian dynamics equations using matrix inversion
 % (use as is)
-B=[ m2*aG2x - F2(1,:);
-    m2*aG2y - F2(2,:);
-    I2*alpha2 - RF2(1)*F2(2,:) + RF2(2)*F2(1,:);
-    m3*aG3x - F3(1,:);
-    m3*aG3y - F3(2,:);
-    I3*alpha3o - T3 - RF3(1)*F3(2,:) + RF3(2)*F3(1,:);
-    m4*aG4x - F4(1,:);
-    m4*aG4y - F4(2,:);
-    I4*alpha4o - T4 - RF4(1)*F4(2,:) + RF4(2)*F4(1,:)];
+B=[ m2*aG2x - Fe2(1,:);
+    m2*aG2y - Fe2(2,:);
+    I2*alpha2 - RFe2(1)*Fe2(2,:) + RFe2(2)*Fe2(1,:);
+    m3*aG3x - Fe3(1,:);
+    m3*aG3y - Fe3(2,:);
+    I3*alpha3o - Te3 - RFe3(1)*Fe3(2,:) + RFe3(2)*Fe3(1,:);
+    m4*aG4x - Fe4(1,:);
+    m4*aG4y - Fe4(2,:);
+    I4*alpha4o - Te4 - RFe4(1)*Fe4(2,:) + RFe4(2)*Fe4(1,:)];
 
 A=[ 1 0 1 0 0 0 0 0 0
     0 1 0 1 0 0 0 0 0
@@ -153,12 +156,12 @@ A=[ 1 0 1 0 0 0 0 0 0
     0 0 0 0 0 -1 0 1 0
     0 0 0 0 R34(2) -R34(1) -R14(2) R14(1) 0];
 
-x=A\B;
+x=A\B; % A^(-1)*B
 % fprintf('%.1f, ', x)
 % fprintf('\n');
 
 results=array2table(x', 'VariableNames', {'F12x', 'F12y', 'F32x', 'F32y', ...
-                        'F43x', 'F43y', 'F14x', 'F14y', 'T2'});
+                        'F43x', 'F43y', 'F14x', 'F14y', 'Te2'});
 results
     
 

@@ -1,5 +1,5 @@
 function example11_virtual_work(a,b,c,d,theta2, omega2,alpha2, ...
-        F2, F3, F4, rF2, rF3, rF4, T3, T4)
+        Fe2, Fe3, Fe4, rFe2, rFe3, rFe4, Te3, Te4)
 
 addpath ../core
 
@@ -17,7 +17,12 @@ if nargin < 1
     % link lengths
     a=0.86; b=1.85; c=0.86; d=2.22; 
     
-    % angle
+    % crank/input
+    alpha2=10;          % angular acceleration
+    omega2=-10;         % angular velocity
+    theta2=-36*pi/180;  % angular position
+    
+    % coupler shape
     BAP=0; % radians
     APlen=b; % coupler length
     
@@ -26,22 +31,19 @@ if nargin < 1
     rho=23.4791;             % material density per length kg/m
                              % if this is not available put m2, I2, m3, ...
                              % etc. directly below
-    
-    rF2=0.0;            % external force location on link 2
-    rF3=1.33;           % external force location on link 3
-    rF4=0.0;            % external force location on link 4
-    
-    alpha2=10;          % angular acceleration
-    omega2=-10;         % angular velocity
-    theta2=-36*pi/180;  % angular position
 
-    F2=[0; 0];          % external force on link 2
-    F3=[500; 0];        % external force on link 3
-    F4=[0; 0];          % .... 
+    % external forces                 
+    rFe2=0.0;            % external force location on link 2
+    rFe3=1.33;           % external force location on link 3
+    rFe4=0.0;            % external force location on link 4
     
-    T3=0; % external torque on link 3
-    T4=0; % external torque on link 4
-
+    Fe2=[0; 0];          % external force on link 2, i and j components
+    Fe3=[500; 0];        % external force on link 3, i and j components
+    Fe4=[0; 0];          % ....
+    
+    % external torques
+    Te3=0; % external torque on link 3
+    Te4=0; % external torque on link 4
 end
 
 % link properties **
@@ -108,20 +110,20 @@ vG3y = a*omega2*cos(theta2) + rCG3*omega3o*cos(theta3o);
 vG4x = -rCG4*omega4o*sin(theta4o);
 vG4y = rCG4*omega4o*cos(theta4o);
 
-vP2x = -rF2*omega2*sin(theta2);
-vP2y = rF2*omega2*cos(theta2);
+ve2x = -rFe2*omega2*sin(theta2);
+ve2y = rFe2*omega2*cos(theta2);
 
-vP3x = -a*omega2*sin(theta2) - rF3*omega3o*sin(theta3o);
-vP3y = a*omega2*cos(theta2) + rF3*omega3o*cos(theta3o);
+ve3x = -a*omega2*sin(theta2) - rFe3*omega3o*sin(theta3o);
+ve3y = a*omega2*cos(theta2) + rFe3*omega3o*cos(theta3o);
 
-vP4x = - rF4*omega4o*sin(theta4o);
-vP4y = rF4*omega4o*cos(theta4o);
+ve4x = - rFe4*omega4o*sin(theta4o);
+ve4y = rFe4*omega4o*cos(theta4o);
 
 % terms of the final equation without the signs (10.28 in book)
 
 % external forces
-t1=dot(F2, [vP2x;vP2y]) + dot(F3, [vP3x;vP3y]) + ...
-    dot(F4, [vP4x;vP4y]) + T3*omega3o + T4*omega4o; 
+t1=dot(Fe2, [ve2x;ve2y]) + dot(Fe3, [ve3x;ve3y]) + ...
+    dot(Fe4, [ve4x;ve4y]) + Te3*omega3o + Te4*omega4o; 
 
 % inertial forces
 t3=m2*dot([aG2x; aG2y], [vG2x; vG2y]) + ...
@@ -129,8 +131,8 @@ t3=m2*dot([aG2x; aG2y], [vG2x; vG2y]) + ...
 % inertial torques
 t4=I2*alpha2*omega2 + I3*alpha3o*omega3o + I4*alpha4o*omega4o;
 
-T2=1/omega2*(t3+t4-t1);
+Te2=1/omega2*(t3+t4-t1);
 
-fprintf('T2=%.4f\n', T2);
+fprintf('Te2=%.4f\n', Te2);
 
 

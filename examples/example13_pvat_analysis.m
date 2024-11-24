@@ -1,5 +1,5 @@
 function example13_pvat_analysis(a,b,c,d,APlen, BAP,theta2, omega2,alpha2, rho,...
-             F2, F3, F4, rF2, rF3, rF4, T3, T4, simTime)
+             Fe2, Fe3, Fe4, rFe2, rFe3, rF4, Te3, Te4, simTime)
 
 addpath ../core
 
@@ -26,19 +26,19 @@ if nargin < 1
                              % if this is not available put m2, I2, m3, ...
                              % etc. directly below
                              
-    rF2=0.0;            % external force location on link 2
-    rF3=1.33;           % external force location on link 3
+    rFe2=0.0;            % external force location on link 2
+    rFe3=1.33;           % external force location on link 3
     rF4=0.0;            % external force location on link 4
     
     alpha2=0; % angular acceleration
     omega2=2*pi; % angular velocity
     
-    F2=[0; 0];          % external force on link 2
-    F3=[0; 0];        % external force on link 3
-    F4=[0; 0];          % .... 
+    Fe2=[0; 0];          % external force on link 2
+    Fe3=[0; 0];        % external force on link 3
+    Fe4=[0; 0];          % .... 
     
-    T3=0; % external torque on link 3
-    T4=0; % external torque on link 4
+    Te3=0; % external torque on link 3
+    Te4=0; % external torque on link 4
     
     simTime=1;
 end
@@ -115,11 +115,11 @@ vG3y = a*omega2.*cos(theta2) + rCG3*omega3o.*cos(theta3o);
 vG4x = -rCG4*omega4o.*sin(theta4o);
 vG4y = rCG4*omega4o.*cos(theta4o);
 
-vP2x = -rF2*omega2.*sin(theta2);
-vP2y = rF2*omega2.*cos(theta2);
+vP2x = -rFe2*omega2.*sin(theta2);
+vP2y = rFe2*omega2.*cos(theta2);
 
-vP3x = -a*omega2.*sin(theta2) - rF3*omega3o.*sin(theta3o);
-vP3y = a*omega2.*cos(theta2) + rF3*omega3o.*cos(theta3o);
+vP3x = -a*omega2.*sin(theta2) - rFe3*omega3o.*sin(theta3o);
+vP3y = a*omega2.*cos(theta2) + rFe3*omega3o.*cos(theta3o);
 
 vP4x = - rF4*omega4o.*sin(theta4o);
 vP4y = rF4*omega4o.*cos(theta4o);
@@ -209,8 +209,8 @@ ylabel('acceeleration of G (m/s^2)');
 % terms of the final equation without the signs (10.28 in book)
 
 % external forces
-t1=dot(F2*ones(1,numel(t)), [vP2x;vP2y]) + dot(F3*ones(1,numel(t)), [vP3x;vP3y]) + ...
-    dot(F4*ones(1,numel(t)), [vP4x;vP4y]) + T3*omega3o + T4*omega4o; 
+t1=dot(Fe2*ones(1,numel(t)), [vP2x;vP2y]) + dot(Fe3*ones(1,numel(t)), [vP3x;vP3y]) + ...
+    dot(Fe4*ones(1,numel(t)), [vP4x;vP4y]) + Te3*omega3o + Te4*omega4o; 
 
 % inertial forces
 t3=m2*dot([aG2x; aG2y], [vG2x; vG2y]) + ...
@@ -218,7 +218,7 @@ t3=m2*dot([aG2x; aG2y], [vG2x; vG2y]) + ...
 % inertial torques
 t4=I2*alpha2.*omega2 + I3*alpha3o.*omega3o + I4*alpha4o.*omega4o;
 
-T_motor=1/omega2*(t3+t4-t1);
+T_motor=1/omega2*(t3+t4-t1); % Te2
 
 figure(3); gcf; clf;
 plot(t, T_motor, 'k', 'linewidth', 2);
