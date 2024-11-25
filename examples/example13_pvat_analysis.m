@@ -1,5 +1,5 @@
 function example13_pvat_analysis(a,b,c,d,APlen, BAP,theta2, omega2,alpha2, rho,...
-             Fe2, Fe3, Fe4, rFe2, rFe3, rF4, Te3, Te4, simTime)
+             Fe2, Fe3, Fe4, re2, re3, re4, Te3, Te4, simTime)
 
 addpath ../core
 
@@ -26,9 +26,9 @@ if nargin < 1
                              % if this is not available put m2, I2, m3, ...
                              % etc. directly below
                              
-    rFe2=0.0;            % external force location on link 2
-    rFe3=1.33;           % external force location on link 3
-    rF4=0.0;            % external force location on link 4
+    re2=0.0;            % external force location on link 2
+    re3=1.33;           % external force location on link 3
+    re4=0.0;            % external force location on link 4
     
     alpha2=0; % angular acceleration
     omega2=2*pi; % angular velocity
@@ -115,14 +115,14 @@ vG3y = a*omega2.*cos(theta2) + rCG3*omega3o.*cos(theta3o);
 vG4x = -rCG4*omega4o.*sin(theta4o);
 vG4y = rCG4*omega4o.*cos(theta4o);
 
-vP2x = -rFe2*omega2.*sin(theta2);
-vP2y = rFe2*omega2.*cos(theta2);
+vP2x = -re2*omega2.*sin(theta2);
+vP2y = re2*omega2.*cos(theta2);
 
-vP3x = -a*omega2.*sin(theta2) - rFe3*omega3o.*sin(theta3o);
-vP3y = a*omega2.*cos(theta2) + rFe3*omega3o.*cos(theta3o);
+vP3x = -a*omega2.*sin(theta2) - re3*omega3o.*sin(theta3o);
+vP3y = a*omega2.*cos(theta2) + re3*omega3o.*cos(theta3o);
 
-vP4x = - rF4*omega4o.*sin(theta4o);
-vP4y = rF4*omega4o.*cos(theta4o);
+vP4x = - re4*omega4o.*sin(theta4o);
+vP4y = re4*omega4o.*cos(theta4o);
 
 % we need these to implement the next set of equations
 [RAZx, RAZy]=pol2cart(theta2, a);

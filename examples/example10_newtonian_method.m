@@ -31,9 +31,9 @@ if nargin < 1
                              % etc. directly below
 
     % external forces                 
-    rFe2=0.0;            % external force location on link 2
-    rFe3=1.33;           % external force location on link 3
-    rFe4=0.0;            % external force location on link 4
+    re2=0.0;            % external force location on link 2 from ground joint
+    re3=1.33;           % external force location on link 3 from joint A
+    re4=0.0;            % external force location on link 4 from joint B
     
     Fe2=[0; 0];          % external force on link 2, i and j components
     Fe3=[500; 0];        % external force on link 3, i and j components
@@ -115,9 +115,9 @@ R14=[   rCG4*cos(theta4o+pi);
         rCG4*sin(theta4o+pi)];
 
 % location of where the force is acting in link's CG frame **
-RFe2=[(rFe2-rCG2)*cos(theta2); (rFe2-rCG2)*sin(theta2)];
-RFe3=[(rFe3-rCG3)*cos(theta3o); (rFe3-rCG3)*sin(theta3o)];
-RFe4=[(rFe4-rCG4)*cos(theta4o); (rFe4-rCG4)*sin(theta4o)];
+Re2=[(re2-rCG2)*cos(theta2); (re2-rCG2)*sin(theta2)];
+Re3=[(re3-rCG3)*cos(theta3o); (re3-rCG3)*sin(theta3o)];
+Re4=[(re4-rCG4)*cos(theta4o); (re4-rCG4)*sin(theta4o)];
 
 
 % accelerations of each link at its center of gravity ** (change only if
@@ -138,13 +138,13 @@ aG4y = rCG4*alpha4o.*cos(theta4o) -rCG4*omega4o.^2.*sin(theta4o);
 % (use as is)
 B=[ m2*aG2x - Fe2(1,:);
     m2*aG2y - Fe2(2,:);
-    I2*alpha2 - RFe2(1)*Fe2(2,:) + RFe2(2)*Fe2(1,:);
+    I2*alpha2 - Re2(1)*Fe2(2,:) + Re2(2)*Fe2(1,:);
     m3*aG3x - Fe3(1,:);
     m3*aG3y - Fe3(2,:);
-    I3*alpha3o - Te3 - RFe3(1)*Fe3(2,:) + RFe3(2)*Fe3(1,:);
+    I3*alpha3o - Te3 - Re3(1)*Fe3(2,:) + Re3(2)*Fe3(1,:);
     m4*aG4x - Fe4(1,:);
     m4*aG4y - Fe4(2,:);
-    I4*alpha4o - Te4 - RFe4(1)*Fe4(2,:) + RFe4(2)*Fe4(1,:)];
+    I4*alpha4o - Te4 - Re4(1)*Fe4(2,:) + Re4(2)*Fe4(1,:)];
 
 A=[ 1 0 1 0 0 0 0 0 0
     0 1 0 1 0 0 0 0 0

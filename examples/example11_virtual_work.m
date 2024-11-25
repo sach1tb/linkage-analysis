@@ -1,5 +1,5 @@
 function example11_virtual_work(a,b,c,d,theta2, omega2,alpha2, ...
-        Fe2, Fe3, Fe4, rFe2, rFe3, rFe4, Te3, Te4)
+        Fe2, Fe3, Fe4, re2, re3, re4, Te3, Te4)
 
 addpath ../core
 
@@ -33,9 +33,9 @@ if nargin < 1
                              % etc. directly below
 
     % external forces                 
-    rFe2=0.0;            % external force location on link 2
-    rFe3=1.33;           % external force location on link 3
-    rFe4=0.0;            % external force location on link 4
+    re2=0.0;            % external force location on link 2 from ground joint
+    re3=1.33;           % external force location on link 3 from joint A
+    re4=0.0;            % external force location on link 4 from joint B
     
     Fe2=[0; 0];          % external force on link 2, i and j components
     Fe3=[500; 0];        % external force on link 3, i and j components
@@ -110,14 +110,14 @@ vG3y = a*omega2*cos(theta2) + rCG3*omega3o*cos(theta3o);
 vG4x = -rCG4*omega4o*sin(theta4o);
 vG4y = rCG4*omega4o*cos(theta4o);
 
-ve2x = -rFe2*omega2*sin(theta2);
-ve2y = rFe2*omega2*cos(theta2);
+ve2x = -re2*omega2*sin(theta2);
+ve2y = re2*omega2*cos(theta2);
 
-ve3x = -a*omega2*sin(theta2) - rFe3*omega3o*sin(theta3o);
-ve3y = a*omega2*cos(theta2) + rFe3*omega3o*cos(theta3o);
+ve3x = -a*omega2*sin(theta2) - re3*omega3o*sin(theta3o);
+ve3y = a*omega2*cos(theta2) + re3*omega3o*cos(theta3o);
 
-ve4x = - rFe4*omega4o*sin(theta4o);
-ve4y = rFe4*omega4o*cos(theta4o);
+ve4x = - re4*omega4o*sin(theta4o);
+ve4y = re4*omega4o*cos(theta4o);
 
 % terms of the final equation without the signs (10.28 in book)
 
