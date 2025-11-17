@@ -731,7 +731,7 @@ function drawSliderCrank() {
     //drawCouplerCurve();
 
     // Fixed point (Z)
-    const Z = { x: 100, y: 100 };
+    const Z = { x: 200, y: 100 };
 
     // Calculate positions for the four-bar linkage
     let cfg = 1;
